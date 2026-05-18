@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HSK Level Test — Mandarin Zest</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --orange:#f37a48;--orange-dark:#d95f2c;--orange-light:#f8dacd;
+    --green:#228b22;--green-dark:#1a6b1a;--green-light:#e0f4e0;
+    --purple:#6a1b9a;--purple-light:#f3e5f5;
+    --white:#ffffff;--ink:#1c1c1c;--ink-mid:#555555;--ink-light:#999999;
+    --surface:#fdfcfa;--border:#ecddd5;
+  }
+  body{font-family:'Outfit',sans-serif;background:var(--surface);color:var(--ink);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:0}
+  .topbar{width:100%;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;padding:14px 2rem}
+  .logo{display:flex;align-items:center;gap:10px}
+  .logo-icon{width:36px;height:36px;background:var(--orange);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;font-size:18px;color:white;font-weight:700;flex-shrink:0}
+  .logo-text{font-size:18px;font-weight:600;color:var(--ink);letter-spacing:-0.01em}
+  .logo-text span{color:var(--orange)}
+  .app{width:100%;max-width:540px;padding:2.5rem 1.25rem 3rem}
+  /* START */
+  .start-screen{display:block}
+  .hero-chars{text-align:center;font-family:'Noto Serif SC',serif;font-size:52px;font-weight:700;letter-spacing:0.12em;margin-bottom:2rem;line-height:1}
+  .hero-chars .c1{color:var(--orange)}
+  .hero-chars .c2{color:var(--green)}
+  .hero-chars .c3{color:var(--orange-light);-webkit-text-stroke:1.5px var(--orange)}
+  .hero-chars .c4{color:var(--green-light);-webkit-text-stroke:1.5px var(--green)}
+  .start-heading{text-align:center;font-size:26px;font-weight:600;letter-spacing:-0.02em;margin-bottom:6px}
+  .start-sub{text-align:center;font-size:15px;color:var(--ink-mid);margin-bottom:2rem}
+  .info-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1.25rem}
+  .info-card-title{font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--orange);margin-bottom:1rem}
+  .info-row{display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--ink-mid);line-height:1.5;margin-bottom:10px}
+  .info-row:last-child{margin-bottom:0}
+  .info-dot{width:20px;height:20px;border-radius:50%;background:var(--orange-light);color:var(--orange);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+  .level-pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:2rem}
+  .level-pill{display:flex;align-items:center;gap:6px;background:var(--white);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:13px;color:var(--ink-mid)}
+  .pill-dot{width:8px;height:8px;border-radius:50%}
+  .start-btn{width:100%;background:var(--orange);color:white;border:none;border-radius:12px;padding:16px;font-family:'Outfit',sans-serif;font-size:16px;font-weight:600;cursor:pointer;transition:background 0.15s,transform 0.1s;display:flex;align-items:center;justify-content:center;gap:8px}
+  .start-btn:hover{background:var(--orange-dark);transform:translateY(-1px)}
+  /* QUIZ */
+  .quiz-screen{display:none}
+  .progress-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .progress-label{font-size:13px;color:var(--ink-light)}
+  .progress-score{font-size:13px;font-weight:500;color:var(--green)}
+  .progress-track{height:5px;background:var(--orange-light);border-radius:10px;margin-bottom:1.75rem;overflow:hidden}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--orange-dark));border-radius:10px;transition:width 0.5s cubic-bezier(.4,0,.2,1)}
+  .flashcard{background:var(--white);border:1px solid var(--border);border-radius:20px;padding:2.25rem 1.75rem 1.75rem;margin-bottom:1.25rem;text-align:center;position:relative;overflow:hidden}
+  .flashcard::after{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--orange),var(--green))}
+  .char-display{font-family:'Noto Serif SC',serif;font-size:80px;font-weight:700;line-height:1;margin-bottom:14px;color:var(--ink)}
+  .pinyin-display{font-size:20px;font-weight:400;color:var(--orange);letter-spacing:0.06em;margin-bottom:4px}
+  .card-prompt{font-size:13px;color:var(--ink-light);margin-top:10px}
+  .choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
+  .choice-btn{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:15px 10px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:400;color:var(--ink);cursor:pointer;text-align:center;line-height:1.35;transition:border-color 0.12s,background 0.12s,color 0.12s,transform 0.1s}
+  .choice-btn:hover:not(:disabled){border-color:var(--orange);color:var(--orange);background:#fff8f5;transform:translateY(-1px)}
+  .choice-btn.correct{background:var(--green-light);border-color:var(--green);color:var(--green);font-weight:600}
+  .choice-btn.wrong{background:#fdecea;border-color:#e05a4a;color:#c0392b}
+  .choice-btn:disabled{cursor:default;transform:none}
+  .feedback{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:12px;font-size:14px;font-weight:500;margin-bottom:1rem;opacity:0;transform:translateY(4px);transition:opacity 0.2s,transform 0.2s}
+  .feedback.show{opacity:1;transform:translateY(0)}
+  .feedback.ok{background:var(--green-light);color:var(--green)}
+  .feedback.err{background:#fdecea;color:#c0392b}
+  .fb-icon{font-size:17px}
+  .next-btn{width:100%;background:var(--ink);color:white;border:none;border-radius:12px;padding:15px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;cursor:pointer;display:none;transition:background 0.15s}
+  .next-btn:hover{background:#333}
+  .next-btn.show{display:block}
+  /* RESULT */
+  .result-screen{display:none;text-align:center}
+  .result-badge-ring{width:110px;height:110px;border-radius:50%;border:3px solid var(--orange-light);display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;background:var(--white)}
+  .result-badge-inner{width:90px;height:90px;border-radius:50%;background:var(--orange);display:flex;flex-direction:column;align-items:center;justify-content:center;color:white}
+  .result-badge-level{font-size:18px;font-weight:700;letter-spacing:-0.02em;line-height:1}
+  .result-badge-sub{font-size:10px;font-weight:500;opacity:0.85;letter-spacing:0.05em;text-transform:uppercase}
+  .result-heading{font-size:22px;font-weight:600;letter-spacing:-0.02em;margin-bottom:6px}
+  .result-desc{font-size:14px;color:var(--ink-mid);line-height:1.65;max-width:380px;margin:0 auto}
+  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:1.5rem 0}
+  .stat-box{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:1rem 0.75rem}
+  .stat-num{font-size:26px;font-weight:600;color:var(--ink);line-height:1;margin-bottom:4px}
+  .stat-lbl{font-size:11px;color:var(--ink-light);text-transform:uppercase;letter-spacing:0.06em}
+  .level-breakdown{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:1.25rem;margin-bottom:1.25rem;text-align:left}
+  .breakdown-title{font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-light);margin-bottom:1rem}
+  .breakdown-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .breakdown-row:last-child{margin-bottom:0}
+  .breakdown-lbl{font-size:12px;font-weight:600;color:var(--ink-mid);width:52px;flex-shrink:0}
+  .breakdown-bar-track{flex:1;height:7px;background:var(--orange-light);border-radius:10px;overflow:hidden}
+  .breakdown-bar-fill{height:100%;border-radius:10px;background:var(--orange);transition:width 0.6s ease}
+  .breakdown-bar-fill.green{background:var(--green)}
+  .breakdown-bar-fill.purple{background:var(--purple)}
+  .breakdown-pct{font-size:12px;font-weight:500;color:var(--ink-mid);width:32px;text-align:right;flex-shrink:0}
+  .cta-box{background:linear-gradient(135deg,var(--orange-light),var(--green-light));border-radius:16px;padding:1.25rem;margin-bottom:1.25rem;text-align:left}
+  .cta-box-title{font-size:14px;font-weight:600;margin-bottom:4px}
+  .cta-box-body{font-size:13px;color:var(--ink-mid);line-height:1.5}
+  .btn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .restart-btn{background:var(--white);color:var(--ink);border:1.5px solid var(--border);border-radius:12px;padding:14px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:background 0.15s}
+  .restart-btn:hover{background:var(--orange-light)}
+  .share-btn{background:var(--green);color:white;border:none;border-radius:12px;padding:14px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:background 0.15s}
+  .share-btn:hover{background:var(--green-dark)}
+  @keyframes fadeSlide{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  .anim{animation:fadeSlide 0.3s ease forwards}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="logo-text">Mandarin <span>Zest</span></div></div>
+<div class="app">
+
+  <!-- START -->
+  <div class="start-screen" id="startScreen">
+    <div class="hero-chars"><span class="c1">汉</span><span class="c2">语</span><span class="c3">水</span><span class="c4">平</span></div>
+    <h1 class="start-heading">What's your HSK level?</h1>
+    <p class="start-sub">An adaptive test across all HSK levels including the new HSK 7–9</p>
+    <div class="info-card">
+      <div class="info-card-title">How it works</div>
+      <div class="info-row"><div class="info-dot">1</div><span>See a Chinese character with its pinyin pronunciation</span></div>
+      <div class="info-row"><div class="info-dot">2</div><span>Choose the correct English meaning from 4 options</span></div>
+      <div class="info-row"><div class="info-dot">3</div><span>Get two right → harder words. Miss one → easier words. The test finds your ceiling.</span></div>
+    </div>
+    <div class="level-pills">
+      <div class="level-pill"><div class="pill-dot" style="background:#e65100"></div>HSK 1 · Beginner</div>
+      <div class="level-pill"><div class="pill-dot" style="background:#f57f17"></div>HSK 2 · Elementary</div>
+      <div class="level-pill"><div class="pill-dot" style="background:#2e7d32"></div>HSK 3 · Intermediate</div>
+      <div class="level-pill"><div class="pill-dot" style="background:#1565c0"></div>HSK 4 · Upper-Int.</div>
+      <div class="level-pill"><div class="pill-dot" style="background:#6a1b9a"></div>HSK 5 · Advanced</div>
+      <div class="level-pill"><div class="pill-dot" style="background:#880e4f"></div>HSK 6 · Mastery</div>
+      <div class="level-pill"><div class="pill-dot" style="background:#4a148c"></div>HSK 7–9 · Elite</div>
+    </div>
+    <button class="start-btn" onclick="startTest()">Begin Test &nbsp;→</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-screen" id="quizScreen">
+    <div class="progress-row">
+      <span class="progress-label" id="progressLabel">Question 1 of 20</span>
+      <span class="progress-score" id="progressScore">0 correct</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="flashcard anim" id="flashcard">
+      <div class="char-display" id="charDisplay"></div>
+      <div class="pinyin-display" id="pinyinDisplay"></div>
+      <div class="card-prompt">Select the correct meaning</div>
+    </div>
+    <div class="choices" id="choices"></div>
+    <div class="feedback" id="feedback"><span class="fb-icon" id="fbIcon"></span><span id="fbText"></span></div>
+    <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next →</button>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-screen" id="resultScreen">
+    <div class="result-badge-ring">
+      <div class="result-badge-inner">
+        <div class="result-badge-level" id="rBadgeLevel">HSK 1</div>
+        <div class="result-badge-sub">Your Level</div>
+      </div>
+    </div>
+    <h2 class="result-heading" id="rHeading"></h2>
+    <p class="result-desc" id="rDesc"></p>
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-num" id="rCorrect">0</div><div class="stat-lbl">Correct</div></div>
+      <div class="stat-box"><div class="stat-num" id="rTotal">20</div><div class="stat-lbl">Questions</div></div>
+      <div class="stat-box"><div class="stat-num" id="rPct">0%</div><div class="stat-lbl">Accuracy</div></div>
+    </div>
+    <div class="level-breakdown">
+      <div class="breakdown-title">Performance by level</div>
+      <div id="breakdownRows"></div>
+    </div>
+    <div class="cta-box">
+      <div class="cta-box-title">Ready to level up?</div>
+      <div class="cta-box-body" id="ctaBody"></div>
+    </div>
+    <div class="btn-row">
+      <button class="restart-btn" onclick="restartTest()">Try again</button>
+      <button class="share-btn" onclick="shareResult()">Share result</button>
+    </div>
+  </div>
+
+</div>
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  WORD BANK
+//  HSK 1–3: 50 words each
+//  HSK 4–6: 100 words each
+//  HSK 7–9: 100 words (combined elite tier, stored as level 7)
+//  Format: {h:hanzi, p:pinyin, m:meaning, d:[distractor×3]}
+// ═══════════════════════════════════════════════════════════════
+const BANK={
+// ─── HSK 1 (50 words) ──────────────────────────────────────────
+1:[
+{h:'你好',p:'nǐ hǎo',m:'hello',d:['goodbye','thank you','sorry']},
+{h:'谢谢',p:'xièxiè',m:'thank you',d:['sorry','hello','please']},
+{h:'再见',p:'zàijiàn',m:'goodbye',d:['hello','good morning','see you later']},
+{h:'水',p:'shuǐ',m:'water',d:['fire','air','earth']},
+{h:'大',p:'dà',m:'big',d:['small','tall','fast']},
+{h:'猫',p:'māo',m:'cat',d:['dog','bird','fish']},
+{h:'吃',p:'chī',m:'to eat',d:['to drink','to sleep','to walk']},
+{h:'去',p:'qù',m:'to go',d:['to come','to stay','to run']},
+{h:'好',p:'hǎo',m:'good',d:['bad','big','old']},
+{h:'人',p:'rén',m:'person',d:['place','thing','time']},
+{h:'书',p:'shū',m:'book',d:['pen','desk','bag']},
+{h:'几',p:'jǐ',m:'how many',d:['how much','why','when']},
+{h:'今天',p:'jīntiān',m:'today',d:['yesterday','tomorrow','now']},
+{h:'学生',p:'xuéshēng',m:'student',d:['teacher','doctor','friend']},
+{h:'中国',p:'Zhōngguó',m:'China',d:['Japan','France','America']},
+{h:'很',p:'hěn',m:'very',d:['not','also','just']},
+{h:'我',p:'wǒ',m:'I / me',d:['you','he','we']},
+{h:'他',p:'tā',m:'he / him',d:['she','I','they']},
+{h:'她',p:'tā',m:'she / her',d:['he','we','they']},
+{h:'我们',p:'wǒmen',m:'we / us',d:['you all','they','those']},
+{h:'什么',p:'shénme',m:'what',d:['who','where','when']},
+{h:'是',p:'shì',m:'to be / is',d:['to have','to want','to like']},
+{h:'有',p:'yǒu',m:'to have',d:['to be','to want','to need']},
+{h:'不',p:'bù',m:'no / not',d:['yes','also','only']},
+{h:'吗',p:'ma',m:'question particle',d:['negation particle','plural marker','past tense marker']},
+{h:'那',p:'nà',m:'that',d:['this','which','what']},
+{h:'这',p:'zhè',m:'this',d:['that','which','here']},
+{h:'里',p:'lǐ',m:'inside / within',d:['outside','above','beside']},
+{h:'来',p:'lái',m:'to come',d:['to go','to leave','to arrive']},
+{h:'上',p:'shàng',m:'above / up',d:['below','beside','behind']},
+{h:'下',p:'xià',m:'below / down',d:['above','inside','outside']},
+{h:'多',p:'duō',m:'many / much',d:['few','one','some']},
+{h:'少',p:'shǎo',m:'few / little',d:['many','more','all']},
+{h:'冷',p:'lěng',m:'cold',d:['hot','warm','cool']},
+{h:'热',p:'rè',m:'hot',d:['cold','cool','warm']},
+{h:'饭',p:'fàn',m:'rice / meal',d:['bread','soup','snack']},
+{h:'茶',p:'chá',m:'tea',d:['coffee','juice','milk']},
+{h:'狗',p:'gǒu',m:'dog',d:['cat','pig','horse']},
+{h:'鱼',p:'yú',m:'fish',d:['bird','insect','reptile']},
+{h:'月',p:'yuè',m:'month / moon',d:['year','day','week']},
+{h:'年',p:'nián',m:'year',d:['month','day','hour']},
+{h:'日',p:'rì',m:'day / sun',d:['night','week','month']},
+{h:'时候',p:'shíhòu',m:'time / moment',d:['place','reason','method']},
+{h:'名字',p:'míngzi',m:'name',d:['address','age','job']},
+{h:'朋友',p:'péngyǒu',m:'friend',d:['family','stranger','colleague']},
+{h:'老师',p:'lǎoshī',m:'teacher',d:['student','doctor','driver']},
+{h:'爸爸',p:'bàba',m:'father / dad',d:['mother','brother','uncle']},
+{h:'妈妈',p:'māma',m:'mother / mum',d:['father','sister','aunt']},
+{h:'哥哥',p:'gēgē',m:'older brother',d:['younger brother','older sister','younger sister']},
+{h:'妹妹',p:'mèimei',m:'younger sister',d:['younger brother','older sister','older brother']},
+],
+
+// ─── HSK 2 (50 words) ──────────────────────────────────────────
+2:[
+{h:'身体',p:'shēntǐ',m:'body / health',d:['mind','face','voice']},
+{h:'颜色',p:'yánsè',m:'colour',d:['shape','size','number']},
+{h:'运动',p:'yùndòng',m:'sport / exercise',d:['music','sleep','food']},
+{h:'地方',p:'dìfang',m:'place / area',d:['time','reason','person']},
+{h:'第一',p:'dì yī',m:'first',d:['last','only','best']},
+{h:'觉得',p:'juédé',m:'to feel / think',d:['to know','to see','to hear']},
+{h:'告诉',p:'gàosu',m:'to tell',d:['to ask','to show','to forget']},
+{h:'已经',p:'yǐjīng',m:'already',d:['still','soon','never']},
+{h:'一起',p:'yīqǐ',m:'together',d:['alone','again','before']},
+{h:'比较',p:'bǐjiào',m:'relatively / compare',d:['completely','exactly','possibly']},
+{h:'结束',p:'jiéshù',m:'to finish / end',d:['to start','to continue','to repeat']},
+{h:'声音',p:'shēngyīn',m:'sound / voice',d:['light','smell','colour']},
+{h:'希望',p:'xīwàng',m:'to hope / wish',d:['to worry','to forget','to choose']},
+{h:'眼睛',p:'yǎnjīng',m:'eyes',d:['ears','nose','mouth']},
+{h:'旁边',p:'pángbiān',m:'beside / next to',d:['above','below','behind']},
+{h:'可以',p:'kěyǐ',m:'can / may',d:['must','should','want to']},
+{h:'因为',p:'yīnwèi',m:'because',d:['therefore','although','if']},
+{h:'所以',p:'suǒyǐ',m:'therefore / so',d:['because','but','and']},
+{h:'但是',p:'dànshì',m:'but / however',d:['and','so','because']},
+{h:'如果',p:'rúguǒ',m:'if',d:['because','although','when']},
+{h:'知道',p:'zhīdào',m:'to know',d:['to understand','to remember','to learn']},
+{h:'认识',p:'rènshi',m:'to know (a person)',d:['to meet','to forget','to like']},
+{h:'喜欢',p:'xǐhuān',m:'to like',d:['to love','to hate','to fear']},
+{h:'手机',p:'shǒujī',m:'mobile phone',d:['computer','camera','television']},
+{h:'电脑',p:'diànnǎo',m:'computer',d:['phone','tablet','printer']},
+{h:'问题',p:'wèntí',m:'question / problem',d:['answer','lesson','idea']},
+{h:'意思',p:'yìsi',m:'meaning',d:['reason','method','result']},
+{h:'事情',p:'shìqíng',m:'matter / thing',d:['person','place','time']},
+{h:'时间',p:'shíjiān',m:'time',d:['money','weather','place']},
+{h:'地图',p:'dìtú',m:'map',d:['plan','list','ticket']},
+{h:'车站',p:'chēzhàn',m:'bus / train station',d:['airport','hotel','hospital']},
+{h:'公共汽车',p:'gōnggòng qìchē',m:'bus',d:['taxi','subway','bicycle']},
+{h:'超市',p:'chāoshì',m:'supermarket',d:['restaurant','school','hospital']},
+{h:'公司',p:'gōngsī',m:'company / firm',d:['school','bank','hospital']},
+{h:'工作',p:'gōngzuò',m:'work / job',d:['study','travel','rest']},
+{h:'学习',p:'xuéxí',m:'to study / learn',d:['to teach','to read','to write']},
+{h:'说',p:'shuō',m:'to speak / say',d:['to listen','to read','to write']},
+{h:'听',p:'tīng',m:'to listen',d:['to speak','to see','to read']},
+{h:'看',p:'kàn',m:'to look / watch',d:['to listen','to speak','to touch']},
+{h:'写',p:'xiě',m:'to write',d:['to read','to draw','to print']},
+{h:'用',p:'yòng',m:'to use',d:['to make','to buy','to take']},
+{h:'买',p:'mǎi',m:'to buy',d:['to sell','to pay','to spend']},
+{h:'卖',p:'mài',m:'to sell',d:['to buy','to give','to take']},
+{h:'钱',p:'qián',m:'money',d:['time','food','book']},
+{h:'快',p:'kuài',m:'fast / quick',d:['slow','early','late']},
+{h:'慢',p:'màn',m:'slow',d:['fast','early','late']},
+{h:'新',p:'xīn',m:'new',d:['old','clean','small']},
+{h:'早',p:'zǎo',m:'early / morning',d:['late','noon','night']},
+{h:'晚',p:'wǎn',m:'late / evening',d:['early','noon','morning']},
+{h:'周末',p:'zhōumò',m:'weekend',d:['weekday','holiday','birthday']},
+],
+
+// ─── HSK 3 (50 words) ──────────────────────────────────────────
+3:[
+{h:'环境',p:'huánjìng',m:'environment',d:['culture','economy','society']},
+{h:'附近',p:'fùjìn',m:'nearby',d:['far away','above','underground']},
+{h:'方法',p:'fāngfǎ',m:'method / way',d:['reason','result','material']},
+{h:'关系',p:'guānxi',m:'relationship',d:['problem','decision','limit']},
+{h:'城市',p:'chéngshì',m:'city',d:['village','country','island']},
+{h:'解释',p:'jiěshì',m:'to explain',d:['to agree','to refuse','to decide']},
+{h:'简单',p:'jiǎndān',m:'simple',d:['complex','strange','correct']},
+{h:'认真',p:'rènzhēn',m:'serious / careful',d:['careless','lazy','shy']},
+{h:'超过',p:'chāoguò',m:'to exceed / surpass',d:['to reach','to reduce','to avoid']},
+{h:'发现',p:'fāxiàn',m:'to discover',d:['to invent','to produce','to destroy']},
+{h:'安静',p:'ānjìng',m:'quiet',d:['noisy','crowded','dark']},
+{h:'其实',p:'qíshí',m:'actually / in fact',d:['therefore','however','otherwise']},
+{h:'经验',p:'jīngyàn',m:'experience',d:['knowledge','skill','habit']},
+{h:'满意',p:'mǎnyì',m:'satisfied',d:['disappointed','curious','nervous']},
+{h:'变化',p:'biànhuà',m:'change',d:['progress','difference','result']},
+{h:'努力',p:'nǔlì',m:'to work hard / effort',d:['to rest','to give up','to hesitate']},
+{h:'准备',p:'zhǔnbèi',m:'to prepare',d:['to finish','to begin','to plan']},
+{h:'检查',p:'jiǎnchá',m:'to check / inspect',d:['to repair','to clean','to measure']},
+{h:'照顾',p:'zhàogù',m:'to take care of',d:['to ignore','to leave','to help']},
+{h:'决定',p:'juédìng',m:'to decide',d:['to doubt','to suggest','to refuse']},
+{h:'选择',p:'xuǎnzé',m:'to choose',d:['to find','to change','to lose']},
+{h:'解决',p:'jiějué',m:'to solve',d:['to create','to ignore','to delay']},
+{h:'影响',p:'yǐngxiǎng',m:'influence / effect',d:['reason','result','method']},
+{h:'参加',p:'cānjiā',m:'to participate / join',d:['to leave','to cancel','to avoid']},
+{h:'帮助',p:'bāngzhù',m:'to help',d:['to disturb','to ignore','to compete']},
+{h:'重要',p:'zhòngyào',m:'important',d:['interesting','common','difficult']},
+{h:'完成',p:'wánchéng',m:'to complete',d:['to start','to continue','to postpone']},
+{h:'提高',p:'tígāo',m:'to improve / raise',d:['to reduce','to maintain','to lower']},
+{h:'感觉',p:'gǎnjué',m:'feeling / sense',d:['thought','opinion','mood']},
+{h:'相信',p:'xiāngxìn',m:'to believe / trust',d:['to doubt','to fear','to forget']},
+{h:'突然',p:'tūrán',m:'suddenly',d:['gradually','finally','certainly']},
+{h:'已经',p:'yǐjīng',m:'already',d:['still','never','soon']},
+{h:'继续',p:'jìxù',m:'to continue',d:['to stop','to restart','to change']},
+{h:'害怕',p:'hàipà',m:'to be afraid',d:['to be happy','to be angry','to be surprised']},
+{h:'担心',p:'dānxīn',m:'to worry',d:['to relax','to hope','to plan']},
+{h:'同意',p:'tóngyì',m:'to agree',d:['to refuse','to ignore','to question']},
+{h:'回答',p:'huídá',m:'to answer',d:['to ask','to explain','to repeat']},
+{h:'提问',p:'tíwèn',m:'to ask a question',d:['to answer','to explain','to discuss']},
+{h:'方向',p:'fāngxiàng',m:'direction',d:['distance','speed','location']},
+{h:'空气',p:'kōngqì',m:'air',d:['water','fire','soil']},
+{h:'温度',p:'wēndù',m:'temperature',d:['humidity','pressure','speed']},
+{h:'地球',p:'dìqiú',m:'the Earth',d:['the moon','the sun','a star']},
+{h:'自然',p:'zìrán',m:'nature / natural',d:['artificial','social','economic']},
+{h:'保护',p:'bǎohù',m:'to protect',d:['to damage','to change','to study']},
+{h:'危险',p:'wēixiǎn',m:'dangerous',d:['safe','boring','strange']},
+{h:'健康',p:'jiànkāng',m:'healthy',d:['sick','tired','weak']},
+{h:'医院',p:'yīyuàn',m:'hospital',d:['school','library','station']},
+{h:'药',p:'yào',m:'medicine',d:['food','tea','vitamin']},
+{h:'锻炼',p:'duànliàn',m:'to exercise / train',d:['to rest','to sleep','to relax']},
+{h:'规定',p:'guīdìng',m:'rule / regulation',d:['suggestion','habit','custom']},
+],
+
+// ─── HSK 4 (100 words) ─────────────────────────────────────────
+4:[
+{h:'态度',p:'tàidù',m:'attitude',d:['ability','interest','habit']},
+{h:'复杂',p:'fùzá',m:'complicated',d:['simple','beautiful','dangerous']},
+{h:'竟然',p:'jìngrán',m:'surprisingly / unexpectedly',d:['gradually','immediately','obviously']},
+{h:'顺利',p:'shùnlì',m:'smooth / without a hitch',d:['difficult','careful','busy']},
+{h:'批评',p:'pīpíng',m:'to criticise',d:['to praise','to ignore','to forgive']},
+{h:'坚持',p:'jiānchí',m:'to persist / insist',d:['to give up','to hesitate','to pretend']},
+{h:'麻烦',p:'máfan',m:'troublesome',d:['convenient','interesting','important']},
+{h:'推迟',p:'tuīchí',m:'to postpone',d:['to cancel','to advance','to confirm']},
+{h:'理解',p:'lǐjiě',m:'to understand',d:['to remember','to express','to ignore']},
+{h:'敢',p:'gǎn',m:'to dare',d:['to want','to need','to fear']},
+{h:'仍然',p:'réngrán',m:'still / yet',d:['already','soon','never']},
+{h:'规律',p:'guīlǜ',m:'rule / pattern',d:['habit','standard','method']},
+{h:'信任',p:'xìnrèn',m:'to trust',d:['to doubt','to respect','to forgive']},
+{h:'承认',p:'chéngrèn',m:'to admit / acknowledge',d:['to deny','to discover','to achieve']},
+{h:'严格',p:'yángé',m:'strict / rigorous',d:['lenient','careless','flexible']},
+{h:'积极',p:'jījí',m:'positive / active',d:['negative','passive','neutral']},
+{h:'消极',p:'xiāojí',m:'negative / passive',d:['positive','active','enthusiastic']},
+{h:'主动',p:'zhǔdòng',m:'proactive / on one\'s own initiative',d:['passive','forced','reluctant']},
+{h:'被动',p:'bèidòng',m:'passive',d:['active','voluntary','enthusiastic']},
+{h:'自信',p:'zìxìn',m:'self-confident',d:['humble','anxious','doubtful']},
+{h:'勇敢',p:'yǒnggǎn',m:'brave / courageous',d:['cowardly','timid','careless']},
+{h:'谦虚',p:'qiānxū',m:'modest / humble',d:['arrogant','confident','indifferent']},
+{h:'骄傲',p:'jiāo\'ào',m:'proud / arrogant',d:['humble','shy','honest']},
+{h:'诚实',p:'chéngshí',m:'honest',d:['dishonest','shy','strict']},
+{h:'幽默',p:'yōumò',m:'humorous',d:['serious','boring','rude']},
+{h:'热情',p:'rèqíng',m:'enthusiastic / warm',d:['cold','indifferent','shy']},
+{h:'冷静',p:'lěngjìng',m:'calm / cool-headed',d:['excited','nervous','angry']},
+{h:'耐心',p:'nàixīn',m:'patient',d:['impatient','careless','reckless']},
+{h:'细心',p:'xìxīn',m:'careful / attentive',d:['careless','reckless','hasty']},
+{h:'粗心',p:'cūxīn',m:'careless',d:['careful','patient','attentive']},
+{h:'建议',p:'jiànyì',m:'to suggest / suggestion',d:['to demand','to refuse','to ignore']},
+{h:'要求',p:'yāoqiú',m:'to require / requirement',d:['to suggest','to allow','to consider']},
+{h:'支持',p:'zhīchí',m:'to support',d:['to oppose','to ignore','to doubt']},
+{h:'反对',p:'fǎnduì',m:'to oppose',d:['to support','to allow','to accept']},
+{h:'解决',p:'jiějué',m:'to solve / resolve',d:['to create','to delay','to worsen']},
+{h:'讨论',p:'tǎolùn',m:'to discuss',d:['to argue','to decide','to announce']},
+{h:'交流',p:'jiāoliú',m:'to communicate / exchange',d:['to compete','to separate','to avoid']},
+{h:'合作',p:'hézuò',m:'to cooperate',d:['to compete','to separate','to argue']},
+{h:'竞争',p:'jìngzhēng',m:'to compete',d:['to cooperate','to share','to avoid']},
+{h:'失败',p:'shībài',m:'to fail / failure',d:['to succeed','to improve','to recover']},
+{h:'成功',p:'chénggōng',m:'to succeed / success',d:['to fail','to lose','to quit']},
+{h:'机会',p:'jīhuì',m:'opportunity / chance',d:['risk','problem','limit']},
+{h:'经历',p:'jīnglì',m:'experience / to go through',d:['habit','skill','knowledge']},
+{h:'印象',p:'yìnxiàng',m:'impression',d:['opinion','feeling','image']},
+{h:'观点',p:'guāndiǎn',m:'viewpoint / perspective',d:['fact','data','decision']},
+{h:'目的',p:'mùdì',m:'purpose / goal',d:['result','process','method']},
+{h:'效果',p:'xiàoguǒ',m:'effect / result',d:['reason','method','process']},
+{h:'原因',p:'yuányīn',m:'reason / cause',d:['result','method','goal']},
+{h:'影响',p:'yǐngxiǎng',m:'to influence / impact',d:['to create','to describe','to avoid']},
+{h:'发展',p:'fāzhǎn',m:'to develop / development',d:['to decline','to maintain','to destroy']},
+{h:'改变',p:'gǎibiàn',m:'to change',d:['to maintain','to preserve','to accept']},
+{h:'增加',p:'zēngjiā',m:'to increase',d:['to decrease','to maintain','to measure']},
+{h:'减少',p:'jiǎnshǎo',m:'to decrease / reduce',d:['to increase','to maintain','to measure']},
+{h:'提供',p:'tígōng',m:'to provide',d:['to request','to receive','to reject']},
+{h:'需要',p:'xūyào',m:'to need / require',d:['to want','to have','to use']},
+{h:'注意',p:'zhùyì',m:'to pay attention / notice',d:['to ignore','to forget','to misunderstand']},
+{h:'负责',p:'fùzé',m:'responsible / in charge',d:['irresponsible','indifferent','confused']},
+{h:'表示',p:'biǎoshì',m:'to express / indicate',d:['to hide','to deny','to forget']},
+{h:'表现',p:'biǎoxiàn',m:'performance / to show',d:['to hide','to ignore','to forget']},
+{h:'证明',p:'zhèngmíng',m:'to prove / proof',d:['to question','to deny','to assume']},
+{h:'说明',p:'shuōmíng',m:'to explain / instructions',d:['to hide','to deny','to exaggerate']},
+{h:'描述',p:'miáoshù',m:'to describe',d:['to invent','to change','to deny']},
+{h:'分析',p:'fēnxī',m:'to analyse',d:['to summarise','to ignore','to exaggerate']},
+{h:'研究',p:'yánjiū',m:'to research / study',d:['to teach','to apply','to publish']},
+{h:'科学',p:'kēxué',m:'science / scientific',d:['art','history','politics']},
+{h:'技术',p:'jìshù',m:'technology / technique',d:['science','art','theory']},
+{h:'信息',p:'xìnxī',m:'information',d:['knowledge','opinion','data']},
+{h:'数据',p:'shùjù',m:'data',d:['opinion','text','image']},
+{h:'网络',p:'wǎngluò',m:'internet / network',d:['software','system','device']},
+{h:'平台',p:'píngtái',m:'platform',d:['channel','system','tool']},
+{h:'内容',p:'nèiróng',m:'content',d:['form','structure','method']},
+{h:'质量',p:'zhìliàng',m:'quality',d:['quantity','price','weight']},
+{h:'数量',p:'shùliàng',m:'quantity / amount',d:['quality','price','size']},
+{h:'价格',p:'jiàgé',m:'price',d:['quality','weight','brand']},
+{h:'安全',p:'ānquán',m:'safe / security',d:['dangerous','complex','expensive']},
+{h:'现代',p:'xiàndài',m:'modern',d:['ancient','traditional','classic']},
+{h:'传统',p:'chuántǒng',m:'tradition / traditional',d:['modern','new','foreign']},
+{h:'文化',p:'wénhuà',m:'culture',d:['art','science','economy']},
+{h:'历史',p:'lìshǐ',m:'history',d:['geography','culture','politics']},
+{h:'社会',p:'shèhuì',m:'society',d:['economy','politics','culture']},
+{h:'政府',p:'zhèngfǔ',m:'government',d:['company','school','organisation']},
+{h:'法律',p:'fǎlǜ',m:'law',d:['rule','custom','morality']},
+{h:'权利',p:'quánlì',m:'right / entitlement',d:['duty','law','power']},
+{h:'责任',p:'zérèn',m:'responsibility / duty',d:['right','privilege','choice']},
+{h:'义务',p:'yìwù',m:'obligation / duty',d:['right','choice','privilege']},
+{h:'自由',p:'zìyóu',m:'freedom',d:['duty','restriction','obligation']},
+{h:'平等',p:'píngděng',m:'equality',d:['difference','privilege','hierarchy']},
+{h:'公平',p:'gōngpíng',m:'fair / just',d:['unfair','strict','complex']},
+{h:'尊重',p:'zūnzhòng',m:'to respect',d:['to ignore','to criticise','to compete']},
+{h:'理想',p:'lǐxiǎng',m:'ideal / dream',d:['reality','plan','goal']},
+{h:'现实',p:'xiànshí',m:'reality / realistic',d:['ideal','dream','fantasy']},
+{h:'幸福',p:'xìngfú',m:'happiness / happy',d:['sadness','loneliness','hardship']},
+{h:'痛苦',p:'tòngkǔ',m:'suffering / painful',d:['happiness','comfort','pleasure']},
+{h:'紧张',p:'jǐnzhāng',m:'nervous / tense',d:['relaxed','confident','calm']},
+{h:'放松',p:'fàngsōng',m:'to relax',d:['to tighten','to stress','to rush']},
+{h:'压力',p:'yālì',m:'pressure / stress',d:['relaxation','comfort','freedom']},
+{h:'动力',p:'dònglì',m:'motivation / driving force',d:['obstacle','pressure','result']},
+{h:'挑战',p:'tiǎozhàn',m:'challenge',d:['opportunity','reward','shortcut']},
+{h:'困难',p:'kùnnán',m:'difficulty / difficult',d:['easy','simple','comfortable']},
+{h:'进步',p:'jìnbù',m:'progress / to improve',d:['regression','standstill','achievement']},
+],
+
+// ─── HSK 5 (100 words) ─────────────────────────────────────────
+5:[
+{h:'逐渐',p:'zhújiàn',m:'gradually',d:['suddenly','barely','equally']},
+{h:'矛盾',p:'máodùn',m:'contradiction',d:['cooperation','conclusion','tradition']},
+{h:'趋势',p:'qūshì',m:'trend / tendency',d:['standard','limit','balance']},
+{h:'抽象',p:'chōuxiàng',m:'abstract',d:['concrete','complex','ancient']},
+{h:'歧视',p:'qíshì',m:'discrimination',d:['appreciation','recognition','competition']},
+{h:'宽容',p:'kuānróng',m:'tolerant / lenient',d:['strict','indifferent','emotional']},
+{h:'倡导',p:'chàngdǎo',m:'to advocate',d:['to oppose','to evaluate','to implement']},
+{h:'繁荣',p:'fánróng',m:'prosperous',d:['declining','isolated','chaotic']},
+{h:'执行',p:'zhíxíng',m:'to implement / execute',d:['to propose','to review','to suspend']},
+{h:'陶醉',p:'táozuì',m:'enchanted / intoxicated',d:['confused','bored','frightened']},
+{h:'遏制',p:'èzhì',m:'to curb / restrain',d:['to encourage','to release','to ignore']},
+{h:'渗透',p:'shèntòu',m:'to infiltrate / permeate',d:['to overflow','to evaporate','to crystallize']},
+{h:'迁就',p:'qiānjiù',m:'to accommodate / give in',d:['to insist','to negotiate','to abandon']},
+{h:'融合',p:'rónghé',m:'to merge / blend',d:['to separate','to compete','to replace']},
+{h:'侥幸',p:'jiǎoxìng',m:'lucky by chance',d:['unfortunate','deserved','planned']},
+{h:'彻底',p:'chèdǐ',m:'thorough / complete',d:['partial','superficial','gradual']},
+{h:'深刻',p:'shēnkè',m:'profound / deep',d:['shallow','brief','vague']},
+{h:'广泛',p:'guǎngfàn',m:'widespread / extensive',d:['narrow','limited','specific']},
+{h:'普遍',p:'pǔbiàn',m:'universal / common',d:['rare','special','unique']},
+{h:'特殊',p:'tèshū',m:'special / exceptional',d:['ordinary','common','normal']},
+{h:'典型',p:'diǎnxíng',m:'typical',d:['unusual','unique','rare']},
+{h:'独特',p:'dútè',m:'unique / distinctive',d:['common','typical','ordinary']},
+{h:'创新',p:'chuàngxīn',m:'innovation',d:['tradition','imitation','repetition']},
+{h:'突破',p:'tūpò',m:'to break through / breakthrough',d:['to maintain','to retreat','to stagnate']},
+{h:'局限',p:'júxiàn',m:'limitation / to limit',d:['freedom','expansion','improvement']},
+{h:'束缚',p:'shùfù',m:'to bind / restrain',d:['to free','to encourage','to support']},
+{h:'克服',p:'kèfú',m:'to overcome',d:['to avoid','to surrender','to complain']},
+{h:'应对',p:'yìngduì',m:'to respond to / cope with',d:['to ignore','to create','to observe']},
+{h:'协调',p:'xiétiáo',m:'to coordinate',d:['to conflict','to separate','to ignore']},
+{h:'均衡',p:'jūnhéng',m:'balanced',d:['uneven','extreme','chaotic']},
+{h:'稳定',p:'wěndìng',m:'stable',d:['unstable','fluctuating','chaotic']},
+{h:'波动',p:'bōdòng',m:'fluctuation',d:['stability','growth','decline']},
+{h:'振动',p:'zhèndòng',m:'to vibrate',d:['to expand','to shrink','to rotate']},
+{h:'激励',p:'jīlì',m:'to motivate / inspire',d:['to discourage','to tire','to confuse']},
+{h:'鼓励',p:'gǔlì',m:'to encourage',d:['to discourage','to criticise','to ignore']},
+{h:'挫折',p:'cuòzhé',m:'setback / frustration',d:['success','reward','progress']},
+{h:'磨练',p:'móliàn',m:'to temper / hone through hardship',d:['to relax','to avoid','to shortcut']},
+{h:'坚韧',p:'jiānrèn',m:'resilient / tenacious',d:['fragile','weak','timid']},
+{h:'脆弱',p:'cuìruò',m:'fragile / vulnerable',d:['strong','resilient','firm']},
+{h:'敏感',p:'mǐngǎn',m:'sensitive',d:['indifferent','numb','calm']},
+{h:'复苏',p:'fùsū',m:'to revive / recover',d:['to decline','to collapse','to stagnate']},
+{h:'衰退',p:'shuāituì',m:'to decline / recede',d:['to grow','to recover','to stabilise']},
+{h:'扩张',p:'kuòzhāng',m:'to expand',d:['to shrink','to maintain','to transfer']},
+{h:'收缩',p:'shōusuō',m:'to contract / shrink',d:['to expand','to grow','to stretch']},
+{h:'转化',p:'zhuǎnhuà',m:'to transform / convert',d:['to maintain','to reverse','to copy']},
+{h:'演变',p:'yǎnbiàn',m:'to evolve / change over time',d:['to remain','to return','to collapse']},
+{h:'形成',p:'xíngchéng',m:'to form / take shape',d:['to destroy','to separate','to reverse']},
+{h:'构成',p:'gòuchéng',m:'to constitute / compose',d:['to destroy','to divide','to remove']},
+{h:'体现',p:'tǐxiàn',m:'to embody / reflect',d:['to hide','to negate','to distort']},
+{h:'揭示',p:'jiēshì',m:'to reveal / expose',d:['to hide','to exaggerate','to ignore']},
+{h:'阐述',p:'chǎnshù',m:'to elaborate / expound',d:['to summarise','to deny','to conceal']},
+{h:'归纳',p:'guīnà',m:'to summarise / induce',d:['to expand','to detail','to contradict']},
+{h:'推断',p:'tuīduàn',m:'to infer / deduce',d:['to observe','to guess','to report']},
+{h:'验证',p:'yànzhèng',m:'to verify',d:['to assume','to deny','to exaggerate']},
+{h:'修正',p:'xiūzhèng',m:'to correct / revise',d:['to confirm','to ignore','to copy']},
+{h:'补充',p:'bǔchōng',m:'to supplement / add',d:['to remove','to replace','to reduce']},
+{h:'整合',p:'zhěnghé',m:'to integrate',d:['to divide','to copy','to ignore']},
+{h:'优化',p:'yōuhuà',m:'to optimise',d:['to degrade','to simplify','to complicate']},
+{h:'评估',p:'pínggū',m:'to evaluate / assess',d:['to ignore','to invent','to exaggerate']},
+{h:'监督',p:'jiāndū',m:'to supervise / monitor',d:['to ignore','to trust blindly','to praise']},
+{h:'约束',p:'yuēshù',m:'to constrain / restrict',d:['to free','to encourage','to expand']},
+{h:'规范',p:'guīfàn',m:'standard / norm',d:['exception','custom','preference']},
+{h:'机制',p:'jīzhì',m:'mechanism',d:['phenomenon','result','appearance']},
+{h:'体制',p:'tǐzhì',m:'system / regime',d:['tradition','culture','custom']},
+{h:'制度',p:'zhìdù',m:'institution / system',d:['habit','custom','tradition']},
+{h:'政策',p:'zhèngcè',m:'policy',d:['law','custom','suggestion']},
+{h:'策略',p:'cèlüè',m:'strategy',d:['goal','result','method']},
+{h:'措施',p:'cuòshī',m:'measure / step',d:['obstacle','result','suggestion']},
+{h:'方案',p:'fāng\'àn',m:'plan / scheme',d:['goal','result','principle']},
+{h:'原则',p:'yuánzé',m:'principle',d:['rule','habit','exception']},
+{h:'标准',p:'biāozhǔn',m:'standard / criterion',d:['exception','preference','opinion']},
+{h:'依据',p:'yījù',m:'basis / according to',d:['conclusion','assumption','opinion']},
+{h:'前提',p:'qiántí',m:'prerequisite / premise',d:['result','conclusion','exception']},
+{h:'基础',p:'jīchǔ',m:'foundation / basis',d:['peak','result','structure']},
+{h:'核心',p:'héxīn',m:'core / nucleus',d:['surface','edge','detail']},
+{h:'关键',p:'guānjiàn',m:'key / crucial',d:['minor','optional','supplementary']},
+{h:'本质',p:'běnzhì',m:'essence / nature',d:['appearance','surface','form']},
+{h:'现象',p:'xiànxiàng',m:'phenomenon',d:['essence','cause','result']},
+{h:'规模',p:'guīmó',m:'scale / scope',d:['quality','speed','depth']},
+{h:'程度',p:'chéngdù',m:'degree / extent',d:['quantity','direction','limit']},
+{h:'层次',p:'céngcì',m:'level / hierarchy',d:['sequence','direction','scope']},
+{h:'角度',p:'jiǎodù',m:'angle / perspective',d:['distance','direction','position']},
+{h:'领域',p:'lǐngyù',m:'field / domain',d:['boundary','level','aspect']},
+{h:'范畴',p:'fànchóu',m:'category / realm',d:['detail','example','exception']},
+{h:'概念',p:'gàiniàn',m:'concept',d:['fact','example','data']},
+{h:'理念',p:'lǐniàn',m:'idea / philosophy',d:['fact','method','result']},
+{h:'意识',p:'yìshí',m:'awareness / consciousness',d:['behaviour','habit','method']},
+{h:'观念',p:'guānniàn',m:'idea / notion',d:['fact','data','result']},
+{h:'价值',p:'jiàzhí',m:'value',d:['price','quality','quantity']},
+{h:'意义',p:'yìyì',m:'meaning / significance',d:['purpose','method','result']},
+{h:'作用',p:'zuòyòng',m:'function / effect',d:['cause','result','method']},
+{h:'影响力',p:'yǐngxiǎnglì',m:'influence / clout',d:['popularity','fame','authority']},
+{h:'竞争力',p:'jìngzhēnglì',m:'competitiveness',d:['productivity','creativity','efficiency']},
+{h:'创造力',p:'chuàngzàolì',m:'creativity',d:['competitiveness','productivity','efficiency']},
+{h:'执行力',p:'zhíxínglì',m:'ability to execute',d:['creativity','planning ability','adaptability']},
+{h:'适应',p:'shìyìng',m:'to adapt',d:['to resist','to ignore','to escape']},
+{h:'融入',p:'róngrù',m:'to integrate into / blend in',d:['to stand out','to exclude','to separate']},
+{h:'排斥',p:'páichì',m:'to repel / exclude',d:['to attract','to include','to welcome']},
+{h:'包容',p:'bāoróng',m:'to be tolerant / inclusive',d:['to exclude','to criticise','to limit']},
+{h:'传播',p:'chuánbō',m:'to spread / disseminate',d:['to receive','to contain','to hide']},
+],
+
+// ─── HSK 6 (100 words) ─────────────────────────────────────────
+6:[
+{h:'渊博',p:'yuānbó',m:'profound and erudite',d:['ordinary','superficial','eloquent']},
+{h:'斟酌',p:'zhēnzhuó',m:'to deliberate carefully',d:['to procrastinate','to boast','to ignore']},
+{h:'晦涩',p:'huìsè',m:'obscure and hard to understand',d:['clear and vivid','brief','long-winded']},
+{h:'凛然',p:'lǐnrán',m:'awe-inspiring / stern',d:['cheerful','melancholic','indifferent']},
+{h:'瞬息',p:'shùnxī',m:'in an instant',d:['over time','at once','year by year']},
+{h:'蹉跎',p:'cuōtuó',m:'to waste time / let time slip',d:['to strive hard','to reminisce','to accumulate']},
+{h:'叱咤',p:'chìzhà',m:'commanding / domineering',d:['submissive','indecisive','forgiving']},
+{h:'沧桑',p:'cāngsāng',m:'vicissitudes of life',d:['prosperity','nostalgia','chaos']},
+{h:'迂腐',p:'yūfǔ',m:'pedantic / old-fashioned',d:['innovative','pragmatic','elegant']},
+{h:'褒贬',p:'bāobiǎn',m:'praise and criticism',d:['acceptance','silence','exaggeration']},
+{h:'踌躇',p:'chóuchú',m:'to hesitate / waver',d:['to decide firmly','to act rashly','to speak bluntly']},
+{h:'恣意',p:'zìyì',m:'wantonly / without restraint',d:['carefully','reluctantly','modestly']},
+{h:'弥漫',p:'mímàn',m:'to pervade / fill the air',d:['to concentrate','to scatter','to settle']},
+{h:'豁达',p:'huòdá',m:'open-minded / magnanimous',d:['narrow-minded','pessimistic','impulsive']},
+{h:'臆断',p:'yìduàn',m:'to conclude subjectively',d:['to reason objectively','to consult','to withhold judgment']},
+{h:'矫揉造作',p:'jiǎo róu zào zuò',m:'affected / unnatural in manner',d:['sincere','straightforward','composed']},
+{h:'瞻前顾后',p:'zhān qián gù hòu',m:'to look before and after / overcautious',d:['decisive','bold','careless']},
+{h:'力挽狂澜',p:'lì wǎn kuánglán',m:'to save a desperate situation',d:['to give up','to observe','to worsen']},
+{h:'纸上谈兵',p:'zhǐ shàng tán bīng',m:'armchair strategist / empty theorising',d:['hands-on approach','practical method','proven strategy']},
+{h:'一蹴而就',p:'yī cù ér jiù',m:'to accomplish at one stroke',d:['to fail repeatedly','to take a long time','to rely on others']},
+{h:'无懈可击',p:'wú xiè kě jī',m:'unassailable / flawless',d:['easily criticised','controversial','incomplete']},
+{h:'鞭辟入里',p:'biān pì rù lǐ',m:'incisive and penetrating analysis',d:['superficial','vague','misleading']},
+{h:'浑然天成',p:'hún rán tiān chéng',m:'perfectly natural / flawless',d:['artificial','forced','awkward']},
+{h:'恰如其分',p:'qià rú qí fèn',m:'just right / appropriate',d:['exaggerated','insufficient','misplaced']},
+{h:'耳濡目染',p:'ěr rú mù rǎn',m:'influenced by what one constantly sees and hears',d:['learned in isolation','taught formally','self-taught']},
+{h:'潜移默化',p:'qián yí mò huà',m:'imperceptible influence / subtle transformation',d:['sudden change','deliberate teaching','open resistance']},
+{h:'举一反三',p:'jǔ yī fǎn sān',m:'to draw inferences from one example',d:['to memorise mechanically','to follow rules strictly','to avoid generalising']},
+{h:'触类旁通',p:'chù lèi páng tōng',m:'mastery in one leads to understanding others',d:['limited to one field','unable to transfer skills','relying on memory']},
+{h:'循序渐进',p:'xún xù jiàn jìn',m:'to advance step by step',d:['to jump to conclusions','to skip steps','to rush forward']},
+{h:'一针见血',p:'yī zhēn jiàn xuè',m:'to hit the nail on the head',d:['to beat around the bush','to exaggerate','to misunderstand']},
+{h:'望洋兴叹',p:'wàng yáng xīng tàn',m:'to feel helpless before a great challenge',d:['to embrace a challenge','to achieve easily','to ignore difficulty']},
+{h:'杯水车薪',p:'bēi shuǐ chē xīn',m:'a drop in the bucket',d:['more than enough','a significant contribution','barely noticeable']},
+{h:'画龙点睛',p:'huà lóng diǎn jīng',m:'to add the finishing touch',d:['to ruin at the last moment','to start from scratch','to over-decorate']},
+{h:'推陈出新',p:'tuī chén chū xīn',m:'to weed out the old and bring forth the new',d:['to preserve tradition','to copy old methods','to avoid change']},
+{h:'融会贯通',p:'róng huì guàn tōng',m:'to achieve thorough mastery',d:['to memorise superficially','to know only one aspect','to forget easily']},
+{h:'博大精深',p:'bó dà jīng shēn',m:'broad and profound',d:['narrow and shallow','simple and clear','rigid and limited']},
+{h:'源远流长',p:'yuán yuǎn liú cháng',m:'with a long history / far-reaching',d:['short-lived','recent','limited in scope']},
+{h:'绵延不断',p:'mián yán bù duàn',m:'continuous / uninterrupted',d:['brief and scattered','intermittent','abrupt']},
+{h:'生生不息',p:'shēng shēng bù xī',m:'endless vitality / perpetual renewal',d:['stagnant','declining','short-lived']},
+{h:'推波助澜',p:'tuī bō zhù lán',m:'to fan the flames / make worse',d:['to calm down','to resolve','to intervene']},
+{h:'不遗余力',p:'bù yí yú lì',m:'to spare no effort',d:['to be half-hearted','to give up midway','to do the minimum']},
+{h:'精益求精',p:'jīng yì qiú jīng',m:'to keep improving / strive for excellence',d:['to be satisfied easily','to cut corners','to avoid feedback']},
+{h:'苦口婆心',p:'kǔ kǒu pó xīn',m:'to give earnest and well-meaning advice',d:['to criticise harshly','to flatter blindly','to stay silent']},
+{h:'鼓舞人心',p:'gǔwǔ rénxīn',m:'inspiring / morale-boosting',d:['discouraging','alarming','confusing']},
+{h:'引人入胜',p:'yǐn rén rù shèng',m:'fascinating / captivating',d:['tedious','confusing','discouraging']},
+{h:'耐人寻味',p:'nài rén xún wèi',m:'thought-provoking / intriguing',d:['straightforward','empty','trivial']},
+{h:'意味深长',p:'yìwèi shēncháng',m:'meaningful / full of implications',d:['superficial','empty','obvious']},
+{h:'语重心长',p:'yǔzhòng xīncháng',m:'sincere and earnest in speech',d:['frivolous','sarcastic','blunt']},
+{h:'字斟句酌',p:'zì zhēn jù zhuó',m:'to weigh every word carefully',d:['to speak carelessly','to exaggerate freely','to remain silent']},
+{h:'洋洋洒洒',p:'yáng yáng sǎ sǎ',m:'flowing and prolific in writing',d:['brief and concise','dry and boring','vague and unclear']},
+{h:'文采飞扬',p:'wén cǎi fēi yáng',m:'brilliant and elegant writing',d:['dull and dry','vague and shallow','stiff and awkward']},
+{h:'旁征博引',p:'páng zhēng bó yǐn',m:'to cite numerous sources',d:['to argue from one source','to speak without evidence','to avoid references']},
+{h:'鞠躬尽瘁',p:'jū gōng jìn cuì',m:'to devote oneself entirely',d:['to be half-hearted','to serve reluctantly','to work for personal gain']},
+{h:'宵衣旰食',p:'xiāo yī gàn shí',m:'to work tirelessly / get up early and eat late',d:['to live luxuriously','to sleep all day','to rest frequently']},
+{h:'废寝忘食',p:'fèi qǐn wàng shí',m:'to neglect sleep and food while working',d:['to maintain balance','to rest adequately','to enjoy leisure']},
+{h:'兢兢业业',p:'jīng jīng yè yè',m:'diligent and conscientious',d:['careless and lazy','impulsive and reckless','passive and indifferent']},
+{h:'处变不惊',p:'chǔ biàn bù jīng',m:'to remain calm amid change',d:['to panic easily','to flee from difficulty','to be shaken']},
+{h:'临危不惧',p:'lín wēi bù jù',m:'to face danger without fear',d:['to panic in crisis','to avoid risk','to surrender']},
+{h:'居安思危',p:'jū ān sī wēi',m:'to think of danger in times of safety',d:['to ignore future risks','to only enjoy the present','to be overly optimistic']},
+{h:'防患未然',p:'fáng huàn wèi rán',m:'to prevent trouble before it arises',d:['to react after the fact','to ignore warnings','to underestimate risk']},
+{h:'亡羊补牢',p:'wáng yáng bǔ láo',m:'better late than never / to fix after a loss',d:['to prevent in advance','to give up after failure','to repeat mistakes']},
+{h:'曲径通幽',p:'qū jìng tōng yōu',m:'a winding path leads to a secluded spot',d:['a direct path leads anywhere','no path leads forward','beauty is only on the surface']},
+{h:'峰回路转',p:'fēng huí lù zhuǎn',m:'a sudden turn for the better',d:['a steady decline','no change in sight','a gradual improvement']},
+{h:'柳暗花明',p:'liǔ àn huā míng',m:'a new hope after despair',d:['continued hardship','clear progress','permanent darkness']},
+{h:'时过境迁',p:'shí guò jìng qiān',m:'times change / circumstances shift',d:['everything stays the same','history repeats exactly','the past returns']},
+{h:'物是人非',p:'wù shì rén fēi',m:'things remain but people change',d:['everything has changed','nothing has changed','people return but things do not']},
+{h:'盛极而衰',p:'shèng jí ér shuāi',m:'decline follows the peak',d:['growth is always sustainable','strength guarantees longevity','peaks are permanent']},
+{h:'否极泰来',p:'pǐ jí tài lái',m:'good fortune follows misfortune',d:['misfortune follows good fortune','hardship has no end','luck is random']},
+{h:'隐约其辞',p:'yǐnyuē qí cí',m:'to speak vaguely / allude',d:['to speak directly','to remain silent','to lie clearly']},
+{h:'闪烁其词',p:'shǎnshuò qí cí',m:'to speak evasively',d:['to be straightforward','to admit clearly','to argue firmly']},
+{h:'含糊其辞',p:'hánhu qí cí',m:'to be ambiguous / hedge one\'s words',d:['to be precise','to be direct','to be silent']},
+{h:'言简意赅',p:'yán jiǎn yì gāi',m:'concise and comprehensive',d:['long-winded and vague','brief but incomplete','clear but repetitive']},
+{h:'言之凿凿',p:'yán zhī záo záo',m:'to speak with certainty',d:['to speak vaguely','to guess wildly','to remain silent']},
+{h:'振聋发聩',p:'zhèn lóng fā kuì',m:'thought that wakes people up / eye-opening',d:['lulling to sleep','reinforcing ignorance','entertaining only']},
+{h:'针砭时弊',p:'zhēn biān shí bì',m:'to point out current ills / incisive social criticism',d:['to praise the status quo','to avoid controversy','to entertain the public']},
+{h:'振振有词',p:'zhèn zhèn yǒu cí',m:'to speak plausibly but wrongly',d:['to speak humbly','to remain silent','to admit fault']},
+{h:'众说纷纭',p:'zhòng shuō fēn yún',m:'many differing opinions',d:['unanimous agreement','absolute silence','single authoritative view']},
+{h:'莫衷一是',p:'mò zhōng yī shì',m:'unable to reach consensus',d:['unanimous agreement','clear conclusion','decisive vote']},
+{h:'求同存异',p:'qiú tóng cún yì',m:'to seek common ground while respecting differences',d:['to insist on one view','to avoid compromise','to ignore differences']},
+{h:'殊途同归',p:'shū tú tóng guī',m:'different paths lead to the same goal',d:['all paths lead nowhere','only one path succeeds','every journey is unique']},
+{h:'见仁见智',p:'jiàn rén jiàn zhì',m:'different people have different views',d:['only one correct interpretation','all views are wrong','facts are indisputable']},
+{h:'各抒己见',p:'gè shū jǐ jiàn',m:'everyone expresses their own view',d:['only the leader speaks','no one shares opinions','views are hidden']},
+{h:'畅所欲言',p:'chàng suǒ yù yán',m:'to speak freely / say all one wants',d:['to stay silent','to speak with restraint','to lie']},
+{h:'知无不言',p:'zhī wú bù yán',m:'to say everything one knows',d:['to be secretive','to pretend ignorance','to speak partially']},
+{h:'推心置腹',p:'tuī xīn zhì fù',m:'to speak from the heart / be sincere',d:['to be evasive','to flatter insincerely','to remain distant']},
+{h:'开诚布公',p:'kāi chéng bù gōng',m:'frank and open',d:['secretive and calculating','flattering and dishonest','cautious and reserved']},
+{h:'坦诚相待',p:'tǎnchéng xiāngdài',m:'to treat each other with honesty',d:['to be guarded','to be deceptive','to be indifferent']},
+{h:'推己及人',p:'tuī jǐ jí rén',m:'to empathise / put oneself in another\'s shoes',d:['to prioritise oneself','to ignore others','to judge harshly']},
+{h:'设身处地',p:'shè shēn chǔ dì',m:'to put oneself in another\'s position',d:['to observe from a distance','to judge objectively','to remain detached']},
+{h:'感同身受',p:'gǎn tóng shēn shòu',m:'to feel as if it happened to oneself',d:['to remain unmoved','to observe coldly','to empathise intellectually']},
+{h:'力所能及',p:'lì suǒ néng jí',m:'within one\'s ability',d:['beyond one\'s ability','at one\'s limit','against one\'s will']},
+{h:'量力而行',p:'liàng lì ér xíng',m:'to act within one\'s means',d:['to overreach','to do the minimum','to rely on others']},
+{h:'恰到好处',p:'qià dào hǎo chù',m:'exactly right / perfectly fitting',d:['overdone','insufficient','misplaced']},
+{h:'适可而止',p:'shì kě ér zhǐ',m:'to know when to stop',d:['to continue regardless','to give up too soon','to push to the extreme']},
+{h:'过犹不及',p:'guò yóu bù jí',m:'too much is as bad as too little',d:['more is always better','less is always worse','extremes are harmless']},
+{h:'无中生有',p:'wú zhōng shēng yǒu',m:'to make something out of nothing / fabricate',d:['to build on solid facts','to confirm the truth','to exaggerate slightly']},
+{h:'半途而废',p:'bàn tú ér fèi',m:'to give up halfway',d:['to complete the task','to start strongly','to pause and reflect']},
+{h:'知难而退',p:'zhī nán ér tuì',m:'to retreat when faced with difficulty',d:['to persist despite difficulty','to seek help','to find an alternative']},
+{h:'虎头蛇尾',p:'hǔ tóu shé wěi',m:'a strong start but weak finish',d:['consistent effort throughout','strong finish after slow start','steady improvement']},
+{h:'叶落归根',p:'yè luò guī gēn',m:'fallen leaves return to the roots / returning to one\'s origins',d:['to wander forever','to put down new roots','to forget one\'s past']},
+],
+
+// ─── HSK 7–9 / Elite (100 words) ────────────────────────────────
+7:[
+{h:'鞭长莫及',p:'biān cháng mò jí',m:'beyond one\'s reach / too far to help',d:['easily accessible','within reach','directly controllable']},
+{h:'差强人意',p:'chā qiáng rén yì',m:'barely satisfactory',d:['extremely impressive','deeply disappointing','completely acceptable']},
+{h:'功亏一篑',p:'gōng kuī yī kuì',m:'to fail on the verge of success',d:['to succeed at the last moment','to start strongly','to build steadily']},
+{h:'积毁销骨',p:'jī huǐ xiāo gǔ',m:'accumulated slander can destroy',d:['compliments build up','truth always wins','silence protects']},
+{h:'因噎废食',p:'yīn yē fèi shí',m:'to give up eating for fear of choking / to overreact to a small risk',d:['to accept all risks','to weigh benefits carefully','to act despite fear']},
+{h:'讳疾忌医',p:'huì jí jì yī',m:'to hide one\'s illness and refuse treatment / to avoid criticism',d:['to seek help readily','to admit fault quickly','to embrace advice']},
+{h:'叶公好龙',p:'Yè Gōng hào lóng',m:'to profess to love something but fear the real thing',d:['to love something genuinely','to face fears head-on','to be indifferent to both']},
+{h:'掩耳盗铃',p:'yǎn ěr dào líng',m:'to deceive oneself / bury one\'s head in the sand',d:['to face reality','to solve problems directly','to seek honest advice']},
+{h:'郑人买履',p:'Zhèng rén mǎi lǚ',m:'to follow rules mechanically while ignoring reality',d:['to adapt flexibly','to use common sense','to trust one\'s own judgment']},
+{h:'买椟还珠',p:'mǎi dú huán zhū',m:'to keep the box and return the pearl / to miss the essential',d:['to choose the most valuable','to see through appearances','to make the right trade-off']},
+{h:'刻舟求剑',p:'kè zhōu qiú jiàn',m:'to use outdated methods for new problems',d:['to adapt to new circumstances','to abandon old methods','to test new approaches']},
+{h:'守株待兔',p:'shǒu zhū dài tù',m:'to wait passively for luck',d:['to actively seek opportunities','to plan for the future','to adapt to change']},
+{h:'邯郸学步',p:'Hándān xué bù',m:'to imitate others and lose one\'s own style',d:['to learn from others wisely','to improve through imitation','to develop one\'s own skill']},
+{h:'画蛇添足',p:'huà shé tiān zú',m:'to ruin something by overdoing it',d:['to add the finishing touch','to leave something unfinished','to improve gradually']},
+{h:'滥竽充数',p:'làn yú chōng shù',m:'to make up the numbers / be unqualified',d:['to be selected on merit','to exceed expectations','to lead by example']},
+{h:'按图索骥',p:'àn tú suǒ jì',m:'to follow a formula rigidly / mechanical approach',d:['to adapt flexibly','to improvise','to think creatively']},
+{h:'南辕北辙',p:'nán yuán běi zhé',m:'actions contrary to one\'s goals',d:['to act consistently with goals','to align effort with aim','to achieve efficiently']},
+{h:'隔靴搔痒',p:'gé xuē sāo yǎng',m:'to scratch without getting to the point',d:['to address the root cause','to be direct and effective','to solve precisely']},
+{h:'隔岸观火',p:'gé àn guān huǒ',m:'to watch from the sidelines / indifference to others\' troubles',d:['to rush to help','to intervene decisively','to share the burden']},
+{h:'火上加油',p:'huǒ shàng jiā yóu',m:'to pour oil on the fire / make things worse',d:['to calm the situation','to resolve a conflict','to prevent escalation']},
+{h:'适得其反',p:'shì dé qí fǎn',m:'to achieve the opposite of one\'s intention',d:['to achieve exactly what was planned','to partially succeed','to have no effect']},
+{h:'矫枉过正',p:'jiǎo wǎng guò zhèng',m:'to overcorrect',d:['to correct precisely','to under-correct','to maintain balance']},
+{h:'以偏概全',p:'yǐ piān gài quán',m:'to generalise from a single case',d:['to reason from broad evidence','to consider all aspects','to avoid hasty conclusions']},
+{h:'管中窥豹',p:'guǎn zhōng kuī bào',m:'a partial view / unable to see the whole picture',d:['to see the full picture','to overlook nothing','to analyse comprehensively']},
+{h:'坐井观天',p:'zuò jǐng guān tiān',m:'a narrow view / limited perspective',d:['to have a broad perspective','to see the bigger picture','to learn from the world']},
+{h:'夜郎自大',p:'Yèláng zì dà',m:'arrogant ignorance of the world',d:['humble self-awareness','accurate self-assessment','openness to new knowledge']},
+{h:'班门弄斧',p:'Bān mén nòng fǔ',m:'to show off in front of an expert',d:['to learn humbly from experts','to acknowledge one\'s limits','to defer to authority']},
+{h:'东施效颦',p:'Dōng Shī xiào pín',m:'blind imitation that makes things worse',d:['imitation that leads to mastery','genuine inspiration','selective learning']},
+{h:'不自量力',p:'bù zì liàng lì',m:'to overestimate one\'s abilities',d:['to know one\'s limits','to be realistically ambitious','to plan carefully']},
+{h:'好高骛远',p:'hào gāo wù yuǎn',m:'to aim too high / impractical ambition',d:['to be realistically ambitious','to set achievable goals','to plan step by step']},
+{h:'急功近利',p:'jí gōng jìn lì',m:'eager for quick results / short-sighted',d:['patient and long-term thinking','indifferent to results','strategic planning']},
+{h:'浅尝辄止',p:'qiǎn cháng zhé zhǐ',m:'to stop after a taste / lack of depth',d:['to persevere','to go deep','to pursue mastery']},
+{h:'一知半解',p:'yī zhī bàn jiě',m:'superficial understanding',d:['thorough understanding','complete mastery','deep expertise']},
+{h:'不求甚解',p:'bù qiú shèn jiě',m:'satisfied with shallow knowledge',d:['to pursue deep understanding','to learn rigorously','to ask probing questions']},
+{h:'望文生义',p:'wàng wén shēng yì',m:'to interpret literally / misread meaning',d:['to understand in context','to grasp nuance','to decode correctly']},
+{h:'断章取义',p:'duàn zhāng qǔ yì',m:'to quote out of context',d:['to quote accurately','to interpret faithfully','to understand fully']},
+{h:'强词夺理',p:'qiǎng cí duó lǐ',m:'to argue irrationally / twist facts',d:['to argue logically','to concede defeat','to seek truth']},
+{h:'巧言令色',p:'qiǎo yán lìng sè',m:'sweet words and flattering expression / insincerity',d:['sincere praise','honest feedback','genuine warmth']},
+{h:'阿谀奉承',p:'ē yú fèng chéng',m:'to flatter / sycophantic',d:['to criticise honestly','to praise sincerely','to advise earnestly']},
+{h:'口蜜腹剑',p:'kǒu mì fù jiàn',m:'honey-mouthed and dagger-hearted / two-faced',d:['sincere and straightforward','honest and loyal','openly critical']},
+{h:'表里不一',p:'biǎo lǐ bù yī',m:'saying one thing and doing another',d:['consistent in word and deed','transparent in motive','honest in expression']},
+{h:'言行不一',p:'yán xíng bù yī',m:'words and actions don\'t match',d:['consistent and reliable','honest and direct','open and transparent']},
+{h:'出尔反尔',p:'chū ěr fǎn ěr',m:'to go back on one\'s word',d:['to keep one\'s promise','to be consistent','to act with integrity']},
+{h:'食言而肥',p:'shí yán ér féi',m:'to grow fat on broken promises',d:['to honour one\'s commitments','to gain by working hard','to earn respect']},
+{h:'言而无信',p:'yán ér wú xìn',m:'untrustworthy / not keeping one\'s word',d:['reliable and trustworthy','consistent and honest','known for keeping promises']},
+{h:'无可厚非',p:'wú kě hòu fēi',m:'not blameworthy / understandable',d:['clearly wrong','highly praiseworthy','completely perfect']},
+{h:'无可非议',p:'wú kě fēi yì',m:'above criticism / irreproachable',d:['highly controversial','slightly flawed','openly criticised']},
+{h:'无懈可击',p:'wú xiè kě jī',m:'unassailable / impeccable',d:['easily criticised','full of flaws','open to challenge']},
+{h:'天衣无缝',p:'tiān yī wú féng',m:'perfect and seamless',d:['obviously flawed','partially finished','rough and visible']},
+{h:'无与伦比',p:'wú yǔ lún bǐ',m:'incomparable / unrivalled',d:['mediocre','slightly above average','among the best']},
+{h:'出类拔萃',p:'chū lèi bá cuì',m:'to stand out / excel above others',d:['to blend in','to remain average','to fall behind']},
+{h:'鹤立鸡群',p:'hè lì jī qún',m:'to stand out in a crowd',d:['to blend in with others','to lag behind','to be unnoticed']},
+{h:'绝无仅有',p:'jué wú jǐn yǒu',m:'unique / one of a kind',d:['very common','widely reproduced','easily replaced']},
+{h:'罕见',p:'hǎnjiàn',m:'rare / seldom seen',d:['common','frequent','widespread']},
+{h:'卓越',p:'zhuóyuè',m:'outstanding / excellent',d:['mediocre','average','ordinary']},
+{h:'非凡',p:'fēifán',m:'extraordinary',d:['ordinary','routine','expected']},
+{h:'超凡脱俗',p:'chāo fán tuō sú',m:'transcendent / above the mundane',d:['average and worldly','conventional and ordinary','rooted in everyday life']},
+{h:'登峰造极',p:'dēng fēng zào jí',m:'to reach the pinnacle',d:['to remain at the base','to plateau midway','to decline from the top']},
+{h:'炉火纯青',p:'lú huǒ chún qīng',m:'to reach mastery / perfection of skill',d:['just beginning','making progress','almost there']},
+{h:'挥洒自如',p:'huī sǎ zì rú',m:'to write or act with effortless ease',d:['to struggle with difficulty','to work mechanically','to produce with effort']},
+{h:'游刃有余',p:'yóu rèn yǒu yú',m:'to handle with great ease',d:['to struggle to cope','to manage barely','to need assistance']},
+{h:'驾轻就熟',p:'jià qīng jiù shú',m:'to handle with practised ease',d:['to face an unfamiliar task','to struggle with basics','to need guidance']},
+{h:'胸有成竹',p:'xiōng yǒu chéng zhú',m:'to have a well-thought-out plan',d:['to act on impulse','to be unprepared','to improvise']},
+{h:'成竹在胸',p:'chéng zhú zài xiōng',m:'confident with a complete plan',d:['uncertain and hesitant','without a clear goal','acting blindly']},
+{h:'深谋远虑',p:'shēn móu yuǎn lǜ',m:'far-sighted and strategically wise',d:['short-sighted','impulsive','reactive']},
+{h:'运筹帷幄',p:'yùn chóu wéi wò',m:'to make plans inside a tent / brilliant strategist',d:['to react after events','to act without a plan','to delegate entirely']},
+{h:'未雨绸缪',p:'wèi yǔ chóu móu',m:'to prepare before trouble comes',d:['to react after disaster','to ignore warning signs','to remain unprepared']},
+{h:'料事如神',p:'liào shì rú shén',m:'uncanny ability to forecast events',d:['frequently wrong in prediction','relying on luck','avoiding all forecasts']},
+{h:'洞若观火',p:'dòng ruò guān huǒ',m:'crystal clear understanding',d:['completely confused','partially understanding','observing without comprehension']},
+{h:'见微知著',p:'jiàn wēi zhī zhù',m:'to see the big picture from small signs',d:['to miss obvious clues','to focus on surface only','to ignore early warning']},
+{h:'明察秋毫',p:'míng chá qiū háo',m:'to observe with penetrating acuity',d:['to overlook obvious things','to rely on others\' observations','to make hasty judgments']},
+{h:'高瞻远瞩',p:'gāo zhān yuǎn zhǔ',m:'visionary / long-sighted',d:['short-sighted','reactive','present-focused']},
+{h:'审时度势',p:'shěn shí duó shì',m:'to read the situation accurately',d:['to act regardless of context','to ignore the environment','to rely on past experience only']},
+{h:'因势利导',p:'yīn shì lì dǎo',m:'to guide in accordance with the situation',d:['to impose a fixed plan','to resist change','to ignore momentum']},
+{h:'顺水推舟',p:'shùn shuǐ tuī zhōu',m:'to go with the current / act opportunistically',d:['to resist natural trends','to force an outcome','to ignore timing']},
+{h:'水到渠成',p:'shuǐ dào qú chéng',m:'success comes naturally when conditions are right',d:['forcing a result prematurely','failing despite good conditions','working against the tide']},
+{h:'瓜熟蒂落',p:'guā shú dì luò',m:'things happen naturally at the right time',d:['forcing ripeness prematurely','delaying beyond maturity','preventing natural processes']},
+{h:'自然而然',p:'zìrán ér rán',m:'naturally / of its own accord',d:['deliberately forced','artificially arranged','consciously planned']},
+{h:'顺其自然',p:'shùn qí zìrán',m:'to let nature take its course',d:['to force an outcome','to resist change','to intervene constantly']},
+{h:'淡泊名利',p:'dàn bó míng lì',m:'indifferent to fame and fortune',d:['driven by ambition','focused on wealth','eager for recognition']},
+{h:'甘之如饴',p:'gān zhī rú yí',m:'to endure hardship willingly',d:['to complain about difficulty','to avoid all hardship','to endure reluctantly']},
+{h:'怡然自得',p:'yí rán zì dé',m:'carefree and contented',d:['anxious and dissatisfied','driven and ambitious','restless and unsettled']},
+{h:'超然物外',p:'chāo rán wù wài',m:'detached from worldly concerns',d:['deeply involved in worldly affairs','driven by material desire','easily swayed by others']},
+{h:'宠辱不惊',p:'chǒng rǔ bù jīng',m:'unmoved by praise or humiliation',d:['easily flattered','quick to despair','volatile in mood']},
+{h:'悲天悯人',p:'bēi tiān mǐn rén',m:'compassionate concern for humanity',d:['indifferent to suffering','contemptuous of weakness','focused on personal gain']},
+{h:'博施济众',p:'bó shī jì zhòng',m:'to give generously for the benefit of all',d:['to withhold from others','to serve only allies','to accumulate for oneself']},
+{h:'扶危济困',p:'fú wēi jì kùn',m:'to help those in danger and hardship',d:['to ignore those in need','to exploit the vulnerable','to observe without action']},
+{h:'力挽狂澜',p:'lì wǎn kuánglán',m:'to stem the tide / save a desperate situation',d:['to make things worse','to give up','to observe passively']},
+{h:'中流砥柱',p:'zhōng liú dǐ zhù',m:'a pillar of strength in difficult times',d:['a source of weakness','a bystander','a beneficiary of others\' effort']},
+{h:'砥砺前行',p:'dǐ lì qián xíng',m:'to forge ahead with determination',d:['to hesitate and retreat','to give up after failure','to wait for better times']},
+{h:'奋发图强',p:'fèn fā tú qiáng',m:'to work hard to become strong',d:['to rest on past achievements','to give up in adversity','to wait for help']},
+{h:'自强不息',p:'zì qiáng bù xī',m:'to strive ceaselessly for self-improvement',d:['to be easily satisfied','to rely on others','to stop after early success']},
+{h:'韬光养晦',p:'tāo guāng yǎng huì',m:'to hide one\'s strength and bide one\'s time',d:['to show off one\'s talents','to seek immediate recognition','to act boldly and publicly']},
+{h:'厚积薄发',p:'hòu jī bó fā',m:'to accumulate knowledge and release it at the right moment',d:['to act immediately without preparation','to spread effort thinly','to display talent constantly']},
+{h:'任重道远',p:'rèn zhòng dào yuǎn',m:'a great responsibility and a long road ahead',d:['a light duty easily fulfilled','a short task nearly complete','a small challenge easily met']},
+{h:'知行合一',p:'zhī xíng hé yī',m:'unity of knowledge and action',d:['knowing without acting','acting without thinking','theory and practice in conflict']},
+{h:'止于至善',p:'zhǐ yú zhì shàn',m:'to rest only at the highest good / strive for perfection',d:['to settle for mediocrity','to stop at good enough','to avoid all imperfection']},
+{h:'格物致知',p:'gé wù zhì zhī',m:'to investigate things and extend knowledge',d:['to accept things as they are','to rely on intuition','to avoid deep inquiry']},
+{h:'慎独',p:'shèn dú',m:'to be virtuous even when alone and unobserved',d:['to behave only when watched','to be strict only in public','to follow rules only when required']},
+{h:'正心诚意',p:'zhèng xīn chéng yì',m:'to rectify the mind and make the will sincere',d:['to act without reflection','to prioritise external appearance','to follow rules mechanically']},
+],
+};
+
+const LEVEL_LABELS={1:'HSK 1',2:'HSK 2',3:'HSK 3',4:'HSK 4',5:'HSK 5',6:'HSK 6',7:'HSK 7–9'};
+const ALL_LEVELS=[1,2,3,4,5,6,7];
+
+const RESULT_INFO={
+  1:{badge:'HSK 1',heading:'Beginner — Keep going!',desc:'You\'re at the very start of your Mandarin journey. Focus on HSK 1 core vocabulary: numbers, greetings, and everyday nouns. Daily 10-minute practice adds up fast.',cta:'Work through the 150 most common HSK 1 words. Flashcards and repetition are your best friends at this stage.'},
+  2:{badge:'HSK 2',heading:'Elementary — Good start!',desc:'You\'ve got the basics down and can handle simple, familiar conversations. Push into HSK 2–3 vocabulary to unlock real communicative ability.',cta:'Practice HSK 2 sentence patterns and try short listening exercises. You\'re close to holding basic chats with confidence.'},
+  3:{badge:'HSK 3',heading:'Intermediate — Solid progress!',desc:'You\'re comfortable with everyday Chinese and can discuss familiar topics. HSK 3 is where the language starts to feel genuinely useful.',cta:'Dive into HSK 3–4 vocabulary and try watching simple Chinese content with subtitles to reinforce what you know.'},
+  4:{badge:'HSK 4',heading:'Upper-Intermediate — Impressive!',desc:'You can navigate a wide range of topics and understand native content with some effort. HSK 4 is roughly B2 — a real communicative milestone.',cta:'Challenge yourself with authentic Chinese media, podcasts, or graded readers. Push for natural fluency.'},
+  5:{badge:'HSK 5',heading:'Advanced — Outstanding!',desc:'Strong command of Chinese. You can read most texts, watch native TV, and engage in complex discussions. HSK 5 is roughly C1 on the CEFR scale.',cta:'Focus on nuanced vocabulary, four-character idioms (成语), and professional or literary Chinese. You\'re nearly there.'},
+  6:{badge:'HSK 6',heading:'Mastery — Exceptional!',desc:'Near-native vocabulary command. You can read professional texts, appreciate literary language, and communicate in any context with precision.',cta:'Explore classical Chinese (文言文), specialised domains, and translation work. You\'ve truly mastered Mandarin.'},
+  7:{badge:'HSK 7–9',heading:'Elite — Extraordinary!',desc:'You have reached the very pinnacle of Chinese language proficiency. Your command of literary idioms, classical allusions, and subtle nuance is at a native — or beyond-native — level.',cta:'Engage with classical literature, academic discourse, and advanced translation. Very few non-native speakers ever reach this level. Extraordinary.'},
+};
+
+const MAX_Q=20;
+let lvl,streak,qCount,score,answered,levelScores,used,curWord;
+
+function shuffle(a){return [...a].sort(()=>Math.random()-0.5)}
+
+function pickWord(l){
+  if(!used[l])used[l]=new Set();
+  const pool=BANK[l],avail=pool.map((_,i)=>i).filter(i=>!used[l].has(i));
+  if(!avail.length){used[l]=new Set();return pickWord(l);}
+  const idx=avail[Math.floor(Math.random()*avail.length)];
+  used[l].add(idx);
+  return pool[idx];
+}
+
+function startTest(){
+  lvl=1;streak=0;qCount=0;score=0;answered=false;
+  levelScores={};used={};
+  ALL_LEVELS.forEach(l=>levelScores[l]={correct:0,total:0});
+  document.getElementById('startScreen').style.display='none';
+  document.getElementById('quizScreen').style.display='block';
+  loadQ();
+}
+
+function loadQ(){
+  answered=false;
+  curWord=pickWord(lvl);
+  document.getElementById('progressLabel').textContent=`Question ${qCount+1} of ${MAX_Q}`;
+  document.getElementById('progressScore').textContent=`${score} correct`;
+  document.getElementById('progressFill').style.width=`${(qCount/MAX_Q)*100}%`;
+  const card=document.getElementById('flashcard');
+  card.classList.remove('anim');void card.offsetWidth;card.classList.add('anim');
+  document.getElementById('charDisplay').textContent=curWord.h;
+  document.getElementById('pinyinDisplay').textContent=curWord.p;
+  const opts=shuffle([curWord.m,...curWord.d]);
+  const el=document.getElementById('choices');el.innerHTML='';
+  opts.forEach(o=>{
+    const b=document.createElement('button');
+    b.className='choice-btn';b.textContent=o;
+    b.onclick=()=>handleAnswer(o,curWord.m,b);
+    el.appendChild(b);
+  });
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('nextBtn').className='next-btn';
+}
+
+function handleAnswer(chosen,correct,btn){
+  if(answered)return;
+  answered=true;
+  const ok=chosen===correct;
+  levelScores[lvl].total++;
+  if(ok){score++;levelScores[lvl].correct++;}
+  document.querySelectorAll('.choice-btn').forEach(b=>{
+    b.disabled=true;
+    if(b.textContent===correct)b.classList.add('correct');
+    else if(b===btn&&!ok)b.classList.add('wrong');
+  });
+  const fb=document.getElementById('feedback');
+  if(ok){
+    fb.className='feedback ok show';
+    document.getElementById('fbIcon').textContent='✓';
+    document.getElementById('fbText').textContent='Correct!';
+    streak++;
+    if(streak>=2&&lvl<7){lvl++;streak=0;}
+  }else{
+    fb.className='feedback err show';
+    document.getElementById('fbIcon').textContent='✗';
+    document.getElementById('fbText').textContent=`The answer is "${correct}"`;
+    streak=0;
+    if(lvl>1)lvl--;
+  }
+  qCount++;
+  const nb=document.getElementById('nextBtn');
+  nb.textContent=qCount>=MAX_Q?'See results →':'Next →';
+  nb.className='next-btn show';
+}
+
+function nextQuestion(){
+  if(qCount>=MAX_Q)showResult();else loadQ();
+}
+
+function estimateLevel(){
+  let best=1;
+  for(let l=1;l<=7;l++){
+    const s=levelScores[l];
+    if(s.total>=1&&s.correct/s.total>=0.6)best=l;
+  }
+  return best;
+}
+
+function showResult(){
+  document.getElementById('quizScreen').style.display='none';
+  const rs=document.getElementById('resultScreen');
+  rs.style.display='block';rs.classList.add('anim');
+  const pct=Math.round((score/qCount)*100);
+  const lv=estimateLevel();
+  const info=RESULT_INFO[lv];
+  // purple badge for elite
+  const inner=document.querySelector('.result-badge-inner');
+  inner.style.background=lv===7?'#4a148c':lv>=5?'#6a1b9a':'var(--orange)';
+  document.getElementById('rBadgeLevel').textContent=info.badge;
+  document.getElementById('rHeading').textContent=info.heading;
+  document.getElementById('rDesc').textContent=info.desc;
+  document.getElementById('rCorrect').textContent=score;
+  document.getElementById('rTotal').textContent=qCount;
+  document.getElementById('rPct').textContent=pct+'%';
+  document.getElementById('ctaBody').textContent=info.cta;
+  const br=document.getElementById('breakdownRows');br.innerHTML='';
+  ALL_LEVELS.forEach(l=>{
+    const s=levelScores[l];
+    const p=s.total?Math.round((s.correct/s.total)*100):null;
+    const cls=p!==null&&p>=60?(l>=7?'purple':'green'):'';
+    br.innerHTML+=`<div class="breakdown-row">
+      <div class="breakdown-lbl">${LEVEL_LABELS[l]}</div>
+      <div class="breakdown-bar-track"><div class="breakdown-bar-fill${cls?' '+cls:''}" style="width:${p??0}%"></div></div>
+      <div class="breakdown-pct">${p!==null?p+'%':'—'}</div>
+    </div>`;
+  });
+}
+
+function restartTest(){
+  document.getElementById('resultScreen').style.display='none';
+  document.getElementById('startScreen').style.display='block';
+  document.querySelector('.result-badge-inner').style.background='var(--orange)';
+}
+
+function shareResult(){
+  const lv=estimateLevel();
+  const pct=Math.round((score/qCount)*100);
+  const text=`I scored ${score}/${qCount} (${pct}%) on the Mandarin Zest HSK test — estimated ${RESULT_INFO[lv].badge}! 🇨🇳 Try it at MandarinZest.com`;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(()=>{
+      const btn=document.querySelector('.share-btn');
+      btn.textContent='Copied! ✓';
+      setTimeout(()=>btn.textContent='Share result',2000);
+    });
+  }
+}
+</script>
+</body>
+</html>
