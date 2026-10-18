@@ -607,10 +607,6 @@ async function drawCard() {
   });
   // mascot + bubble
   if (mascotImg.naturalWidth) { const h = 520, w = h * mascotImg.naturalWidth / mascotImg.naturalHeight; x.drawImage(mascotImg, 1080 - w - 60, 1350 - h - 210, w, h); }
-  const word = { 1: "加油！", 2: "很好！", 3: "太棒了！", 4: "厉害！", 5: "了不起！", 6: "佩服！", 7: "牛！" }[R.lv];
-  x.font = "700 56px 'Noto Sans SC'"; const bw = x.measureText(word).width + 60;
-  x.fillStyle = "#fff"; rr(x, 1080 - bw - 70, 540, bw, 96, 32); x.fill();
-  x.fillStyle = "#2a2420"; x.fillText(word, 1080 - bw - 40, 608);
   // footer
   x.fillStyle = "#2a2420"; rr(x, 60, 1150, 960, 140, 36); x.fill();
   x.fillStyle = "#fff"; x.font = "800 40px Outfit"; x.fillText("What's your level? Take the free test", 100, 1210);
