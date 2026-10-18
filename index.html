@@ -2,916 +2,680 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HSK Level Test — Mandarin Zest</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What's your HSK level? · Mandarin Zest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@500;700&display=swap" rel="stylesheet">
 <style>
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  :root{
-    --orange:#f37a48;--orange-dark:#d95f2c;--orange-light:#f8dacd;
-    --green:#228b22;--green-dark:#1a6b1a;--green-light:#e0f4e0;
-    --purple:#6a1b9a;--purple-light:#f3e5f5;
-    --white:#ffffff;--ink:#1c1c1c;--ink-mid:#555555;--ink-light:#999999;
-    --surface:#fdfcfa;--border:#ecddd5;
+  :root {
+    --ink: #2a2420; --muted: #5c4f47; --soft: #8a7d74; --line: #ecdcd2;
+    --orange: #f37a48; --orange-d: #e2632f; --peach: #fdf1ea; --peach2: #f8dacd;
+    --green: #1b6f1b; --green-d: #173f17; --mint: #e0f4e0; --cream: #fffaf6;
+    --zh: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
   }
-  body{font-family:'Outfit',sans-serif;background:var(--surface);color:var(--ink);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:0}
-  .topbar{width:100%;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;padding:14px 2rem}
-  .logo{display:flex;align-items:center;gap:10px}
-  .logo-icon{width:36px;height:36px;background:var(--orange);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;font-size:18px;color:white;font-weight:700;flex-shrink:0}
-  .logo-text{font-size:18px;font-weight:600;color:var(--ink);letter-spacing:-0.01em}
-  .logo-text span{color:var(--orange)}
-  .app{width:100%;max-width:540px;padding:2.5rem 1.25rem 3rem}
-  /* START */
-  .start-screen{display:block}
-  .hero-chars{text-align:center;font-family:'Noto Serif SC',serif;font-size:52px;font-weight:700;letter-spacing:0.12em;margin-bottom:2rem;line-height:1}
-  .hero-chars .c1{color:var(--orange)}
-  .hero-chars .c2{color:var(--green)}
-  .hero-chars .c3{color:var(--orange-light);-webkit-text-stroke:1.5px var(--orange)}
-  .hero-chars .c4{color:var(--green-light);-webkit-text-stroke:1.5px var(--green)}
-  .start-heading{text-align:center;font-size:26px;font-weight:600;letter-spacing:-0.02em;margin-bottom:6px}
-  .start-sub{text-align:center;font-size:15px;color:var(--ink-mid);margin-bottom:2rem}
-  .info-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1.25rem}
-  .info-card-title{font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--orange);margin-bottom:1rem}
-  .info-row{display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--ink-mid);line-height:1.5;margin-bottom:10px}
-  .info-row:last-child{margin-bottom:0}
-  .info-dot{width:20px;height:20px;border-radius:50%;background:var(--orange-light);color:var(--orange);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-  .level-pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:2rem}
-  .level-pill{display:flex;align-items:center;gap:6px;background:var(--white);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:13px;color:var(--ink-mid)}
-  .pill-dot{width:8px;height:8px;border-radius:50%}
-  .start-btn{width:100%;background:var(--orange);color:white;border:none;border-radius:12px;padding:16px;font-family:'Outfit',sans-serif;font-size:16px;font-weight:600;cursor:pointer;transition:background 0.15s,transform 0.1s;display:flex;align-items:center;justify-content:center;gap:8px}
-  .start-btn:hover{background:var(--orange-dark);transform:translateY(-1px)}
-  /* QUIZ */
-  .quiz-screen{display:none}
-  .progress-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-  .progress-label{font-size:13px;color:var(--ink-light)}
-  .progress-score{font-size:13px;font-weight:500;color:var(--green)}
-  .progress-track{height:5px;background:var(--orange-light);border-radius:10px;margin-bottom:1.75rem;overflow:hidden}
-  .progress-fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--orange-dark));border-radius:10px;transition:width 0.5s cubic-bezier(.4,0,.2,1)}
-  .flashcard{background:var(--white);border:1px solid var(--border);border-radius:20px;padding:2.25rem 1.75rem 1.75rem;margin-bottom:1.25rem;text-align:center;position:relative;overflow:hidden}
-  .flashcard::after{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--orange),var(--green))}
-  .char-display{font-family:'Noto Serif SC',serif;font-size:80px;font-weight:700;line-height:1;margin-bottom:14px;color:var(--ink)}
-  .pinyin-display{font-size:20px;font-weight:400;color:var(--orange);letter-spacing:0.06em;margin-bottom:4px}
-  .card-prompt{font-size:13px;color:var(--ink-light);margin-top:10px}
-  .choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
-  .choice-btn{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:15px 10px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:400;color:var(--ink);cursor:pointer;text-align:center;line-height:1.35;transition:border-color 0.12s,background 0.12s,color 0.12s,transform 0.1s}
-  .choice-btn:hover:not(:disabled){border-color:var(--orange);color:var(--orange);background:#fff8f5;transform:translateY(-1px)}
-  .choice-btn.correct{background:var(--green-light);border-color:var(--green);color:var(--green);font-weight:600}
-  .choice-btn.wrong{background:#fdecea;border-color:#e05a4a;color:#c0392b}
-  .choice-btn:disabled{cursor:default;transform:none}
-  .feedback{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:12px;font-size:14px;font-weight:500;margin-bottom:1rem;opacity:0;transform:translateY(4px);transition:opacity 0.2s,transform 0.2s}
-  .feedback.show{opacity:1;transform:translateY(0)}
-  .feedback.ok{background:var(--green-light);color:var(--green)}
-  .feedback.err{background:#fdecea;color:#c0392b}
-  .fb-icon{font-size:17px}
-  .next-btn{width:100%;background:var(--ink);color:white;border:none;border-radius:12px;padding:15px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;cursor:pointer;display:none;transition:background 0.15s}
-  .next-btn:hover{background:#333}
-  .next-btn.show{display:block}
-  /* RESULT */
-  .result-screen{display:none;text-align:center}
-  .result-badge-ring{width:110px;height:110px;border-radius:50%;border:3px solid var(--orange-light);display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;background:var(--white)}
-  .result-badge-inner{width:90px;height:90px;border-radius:50%;background:var(--orange);display:flex;flex-direction:column;align-items:center;justify-content:center;color:white}
-  .result-badge-level{font-size:18px;font-weight:700;letter-spacing:-0.02em;line-height:1}
-  .result-badge-sub{font-size:10px;font-weight:500;opacity:0.85;letter-spacing:0.05em;text-transform:uppercase}
-  .result-heading{font-size:22px;font-weight:600;letter-spacing:-0.02em;margin-bottom:6px}
-  .result-desc{font-size:14px;color:var(--ink-mid);line-height:1.65;max-width:380px;margin:0 auto}
-  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:1.5rem 0}
-  .stat-box{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:1rem 0.75rem}
-  .stat-num{font-size:26px;font-weight:600;color:var(--ink);line-height:1;margin-bottom:4px}
-  .stat-lbl{font-size:11px;color:var(--ink-light);text-transform:uppercase;letter-spacing:0.06em}
-  .level-breakdown{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:1.25rem;margin-bottom:1.25rem;text-align:left}
-  .breakdown-title{font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-light);margin-bottom:1rem}
-  .breakdown-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-  .breakdown-row:last-child{margin-bottom:0}
-  .breakdown-lbl{font-size:12px;font-weight:600;color:var(--ink-mid);width:52px;flex-shrink:0}
-  .breakdown-bar-track{flex:1;height:7px;background:var(--orange-light);border-radius:10px;overflow:hidden}
-  .breakdown-bar-fill{height:100%;border-radius:10px;background:var(--orange);transition:width 0.6s ease}
-  .breakdown-bar-fill.green{background:var(--green)}
-  .breakdown-bar-fill.purple{background:var(--purple)}
-  .breakdown-pct{font-size:12px;font-weight:500;color:var(--ink-mid);width:32px;text-align:right;flex-shrink:0}
-  .cta-box{background:linear-gradient(135deg,var(--orange-light),var(--green-light));border-radius:16px;padding:1.25rem;margin-bottom:1.25rem;text-align:left}
-  .cta-box-title{font-size:14px;font-weight:600;margin-bottom:4px}
-  .cta-box-body{font-size:13px;color:var(--ink-mid);line-height:1.5}
-  .btn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .restart-btn{background:var(--white);color:var(--ink);border:1.5px solid var(--border);border-radius:12px;padding:14px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:background 0.15s}
-  .restart-btn:hover{background:var(--orange-light)}
-  .share-btn{background:var(--green);color:white;border:none;border-radius:12px;padding:14px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:background 0.15s}
-  .share-btn:hover{background:var(--green-dark)}
-  @keyframes fadeSlide{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-  .anim{animation:fadeSlide 0.3s ease forwards}
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--cream); }
+  body { font-family: 'Outfit', system-ui, sans-serif; color: var(--ink); }
+  .app { max-width: 760px; margin: 0 auto; padding: 26px 20px 30px; }
+  .zh { font-family: var(--zh); }
+  button { font-family: inherit; }
+  button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid #4f7a94; outline-offset: 2px; }
+  .screen { display: none; animation: in .35s ease-out; }
+  .screen.on { display: block; }
+  @keyframes in { from { opacity: 0; transform: translateY(8px); } }
+  .eyebrow { font-size: 12.5px; font-weight: 800; letter-spacing: .12em; color: #a8431a; }
+  .btn { border: 0; border-radius: 999px; font-weight: 800; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: background .15s, transform .15s; }
+  .btn.big { font-size: 18px; padding: 17px 34px; }
+  .btn.orange { background: var(--orange); color: var(--ink); } .btn.orange:hover { background: var(--orange-d); }
+  .btn.green { background: var(--green); color: #fff; } .btn.green:hover { background: #145514; }
+  .btn.dark { background: var(--ink); color: #fff; } .btn.dark:hover { background: #000; }
+  .btn.white { background: #fff; color: var(--ink); }
+  .btn.ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 2px var(--ink); }
+  .btn:active { transform: scale(.97); }
+
+  /* ---------- start ---------- */
+  .hero { display: flex; gap: 22px; align-items: center; }
+  .hero-text { flex: 1; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  h1 { margin: 0; font-size: 44px; line-height: 1.04; font-weight: 800; }
+  .lead { margin: 0; font-size: 17px; line-height: 1.5; color: #4a3c34; }
+  .mascot-wrap { position: relative; flex: none; width: 190px; padding-top: 50px; }
+  .mascot-wrap img { width: 150px; display: block; margin: 0 auto; animation: bob 3.4s ease-in-out infinite; }
+  @keyframes bob { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-6px) rotate(2deg); } }
+  .say { position: absolute; top: 0; left: 0; background: #fff; border-radius: 16px 16px 16px 4px; padding: 8px 12px; box-shadow: 0 8px 18px rgba(42,36,32,.14); font-weight: 700; }
+  .say .zh { font-size: 19px; display: block; }
+  .say small { font-size: 12px; color: #c4521f; }
+  .kinds { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 22px 0 18px; }
+  .kind { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 14px; display: flex; gap: 12px; align-items: center; }
+  .kind .zh { font-size: 24px; font-weight: 700; color: #c4521f; width: 42px; height: 42px; flex: none; border-radius: 12px; background: var(--peach); display: flex; align-items: center; justify-content: center; }
+  .kind b { display: block; font-size: 15px; } .kind span { font-size: 13px; color: #6b5a50; }
+  .start-row { display: flex; gap: 14px 18px; align-items: center; flex-wrap: wrap; }
+  .toggle { display: inline-flex; gap: 8px; align-items: center; font-size: 14px; color: var(--muted); cursor: pointer; }
+  .toggle input { width: 18px; height: 18px; accent-color: var(--orange); }
+  .fine { font-size: 13px; color: var(--soft); margin-top: 12px; }
+
+  /* ---------- quiz ---------- */
+  .bar { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+  .track { flex: 1; height: 10px; border-radius: 5px; background: #f1e3da; overflow: hidden; }
+  .fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--orange), var(--green)); transition: width .4s ease; }
+  .count { font-size: 14px; font-weight: 800; white-space: nowrap; }
+  .streak { font-size: 14px; font-weight: 800; color: #c4521f; white-space: nowrap; min-width: 44px; text-align: right; }
+  .streak.pop { animation: pop .4s cubic-bezier(.3,1.6,.5,1); }
+  @keyframes pop { 50% { transform: scale(1.4); } }
+  .quiz { display: flex; gap: 18px; }
+  .qmain { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+  .tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag { font-size: 12.5px; font-weight: 800; border-radius: 999px; padding: 5px 12px; }
+  .tag.type { background: var(--ink); color: #fff; }
+  .tag.lvl { background: var(--peach); color: #a8431a; }
+  .prompt { background: #fff; border-radius: 22px; box-shadow: 0 10px 30px rgba(42,36,32,.08); padding: 26px 22px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; min-height: 190px; justify-content: center; }
+  .prompt .hanzi { font-family: var(--zh); font-size: 64px; font-weight: 700; line-height: 1.1; }
+  .prompt .hanzi.long { font-size: 46px; }
+  .prompt .pinyin { font-size: 19px; color: #a8431a; font-weight: 600; }
+  .prompt .meaning { font-size: 30px; font-weight: 800; }
+  .prompt .sentence { font-family: var(--zh); font-size: 30px; font-weight: 500; line-height: 1.5; }
+  .prompt .sentence .gap { display: inline-block; min-width: 2.4em; border-bottom: 3px solid var(--orange); margin: 0 4px; color: var(--green); font-weight: 700; }
+  .prompt .hint { font-size: 14.5px; color: #6b5a50; }
+  .play { width: 96px; height: 96px; border-radius: 50%; border: 0; background: var(--orange); color: var(--ink); cursor: pointer; box-shadow: 0 0 0 12px var(--peach); display: flex; align-items: center; justify-content: center; transition: transform .15s; }
+  .play:hover { transform: scale(1.05); } .play svg { width: 40px; height: 40px; }
+  .play.speaking { animation: ring 1s ease-out infinite; }
+  @keyframes ring { 0% { box-shadow: 0 0 0 0 rgba(243,122,72,.5), 0 0 0 12px var(--peach); } 100% { box-shadow: 0 0 0 26px rgba(243,122,72,0), 0 0 0 12px var(--peach); } }
+  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .choice {
+    text-align: left; display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 16px; border: 2px solid var(--line);
+    background: #fff; cursor: pointer; font-size: 17px; font-weight: 600; color: var(--ink); transition: border-color .15s, background .15s, transform .15s; min-height: 62px;
+  }
+  .choice:hover:not(:disabled) { border-color: var(--orange); transform: translateY(-2px); }
+  .choice .k { width: 30px; height: 30px; flex: none; border-radius: 50%; background: var(--peach); color: #a8431a; font-weight: 800; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+  .choice .zh { font-size: 26px; font-weight: 700; }
+  .choice.ok { border-color: var(--green); background: var(--mint); }
+  .choice.ok .k { background: var(--green); color: #fff; }
+  .choice.bad { border-color: #d8483b; background: #fdecea; }
+  .choice.bad .k { background: #d8483b; color: #fff; }
+  .choice:disabled { cursor: default; }
+  .feedback { display: none; border-radius: 16px; padding: 12px 14px; gap: 12px; align-items: center; }
+  .feedback.on { display: flex; animation: in .25s ease-out; }
+  .feedback.good { background: var(--mint); } .feedback.miss { background: var(--peach); }
+  .feedback img { width: 44px; flex: none; }
+  .feedback .ft { flex: 1; min-width: 0; }
+  .feedback .ft b { display: block; font-size: 16px; }
+  .feedback.good .ft b { color: var(--green-d); } .feedback.miss .ft b { color: #7c3010; }
+  .feedback .ft span { font-size: 14px; color: var(--muted); }
+  .skip { align-self: center; background: none; border: 0; color: var(--soft); font-size: 13.5px; cursor: pointer; text-decoration: underline; }
+  .ladder { width: 98px; flex: none; background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 14px 12px; display: flex; flex-direction: column; gap: 11px; align-self: flex-start; }
+  .ladder .t { font-size: 11px; font-weight: 800; letter-spacing: .08em; color: var(--soft); }
+  .rung { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; color: #c9bcb3; transition: color .3s; }
+  .rung i { width: 10px; height: 10px; border-radius: 50%; background: #e6ddd6; transition: background .3s, transform .3s; flex: none; }
+  .rung.done { color: var(--muted); } .rung.done i { background: var(--green); }
+  .rung.here { color: var(--ink); } .rung.here i { background: var(--orange); transform: scale(1.4); }
+
+  /* ---------- result ---------- */
+  .res-top { display: flex; gap: 22px; align-items: center; }
+  .badge { width: 156px; height: 156px; flex: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: conic-gradient(var(--orange) 0 var(--p, 50%), #f1e3da 0); animation: spin-in .9s ease-out; }
+  @keyframes spin-in { from { transform: rotate(-90deg) scale(.7); opacity: 0; } }
+  .badge > div { width: 126px; height: 126px; border-radius: 50%; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .badge small { font-size: 11.5px; font-weight: 800; letter-spacing: .1em; color: var(--soft); }
+  .badge strong { font-size: 36px; font-weight: 800; line-height: 1; }
+  .badge strong.long { font-size: 30px; }
+  .badge em { font-style: normal; font-size: 12.5px; font-weight: 700; color: #a8431a; margin-top: 2px; }
+  .res-head { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+  h2 { margin: 0; font-size: 29px; font-weight: 800; line-height: 1.12; }
+  .cando { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; }
+  .cando li { display: flex; gap: 8px; font-size: 14.5px; line-height: 1.4; }
+  .cando li::before { content: "✓"; color: var(--green); font-weight: 800; }
+  .grid2 { display: grid; grid-template-columns: 1.15fr 1fr; gap: 14px; margin-top: 18px; }
+  .panel { border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 9px; }
+  .panel.white { background: #fff; border: 1px solid var(--line); }
+  .panel .t { font-size: 12px; font-weight: 800; letter-spacing: .08em; color: var(--soft); }
+  .skill { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+  .skill span:first-child { width: 82px; font-weight: 700; }
+  .skill .tr { flex: 1; height: 10px; border-radius: 5px; background: #f1e3da; overflow: hidden; }
+  .skill .tr i { display: block; height: 100%; width: 0; border-radius: 5px; transition: width 1s ease .3s; }
+  .skill b { width: 40px; text-align: right; }
+  .note { font-size: 13px; color: #6b5a50; }
+  .panel.share { background: var(--ink); color: #fff; align-items: center; text-align: center; }
+  .panel.share .t { color: #f8a77f; }
+  .panel.share canvas { width: 140px; height: 175px; border-radius: 10px; display: block; }
+  .share-btns { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .share-btns .btn { font-size: 14px; padding: 10px 16px; }
+  .copied { font-size: 12.5px; color: #9fd89f; min-height: 16px; }
+  .next { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
+  .offer { border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 7px; }
+  .offer.club { background: var(--mint); } .offer.shop { background: var(--peach); } .offer.start { background: #fff3d6; }
+  .offer .t { font-size: 12px; font-weight: 800; letter-spacing: .08em; }
+  .offer.club .t { color: var(--green); } .offer.shop .t { color: #a8431a; } .offer.start .t { color: #6b4900; }
+  .offer h3 { margin: 0; font-size: 19px; font-weight: 800; line-height: 1.2; }
+  .offer.club h3 { color: var(--green-d); }
+  .offer p { margin: 0; font-size: 14px; line-height: 1.45; color: var(--muted); }
+  .offer.club p { color: #2c4a2c; }
+  .offer .btn { align-self: flex-start; margin-top: 4px; font-size: 15px; padding: 11px 18px; }
+  .code { font-weight: 800; background: #fff; border-radius: 6px; padding: 1px 6px; color: var(--ink); }
+  .mail { margin-top: 14px; background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; }
+  .mail .row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .mail input[type=email] { flex: 1; min-width: 200px; font-family: inherit; font-size: 15px; padding: 11px 13px; border: 1.5px solid #e3d3c9; border-radius: 12px; }
+  .mail input[type=email]:focus { border-color: var(--orange); outline: none; }
+  .mail label.c { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; color: var(--muted); line-height: 1.4; cursor: pointer; }
+  .mail label.c input { width: 17px; height: 17px; margin: 1px 0 0; flex: none; accent-color: var(--orange); }
+  .mail .msg { font-size: 13.5px; font-weight: 700; color: var(--green); min-height: 0; }
+  .mail .err { color: #b3261e; }
+  .links { display: flex; gap: 18px; justify-content: center; margin-top: 16px; font-size: 14px; font-weight: 700; }
+  .links button { background: none; border: 0; color: #a8431a; cursor: pointer; font-size: 14px; font-weight: 700; text-decoration: underline; }
+  .review { display: none; margin-top: 12px; background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 8px 16px; }
+  .review.on { display: block; }
+  .rv { display: flex; gap: 10px; align-items: center; padding: 9px 0; border-bottom: 1px solid #f4ebe5; font-size: 14px; }
+  .rv:last-child { border-bottom: 0; }
+  .rv .m { width: 22px; font-weight: 800; flex: none; }
+  .rv .m.y { color: var(--green); } .rv .m.n { color: #d8483b; } .rv .m.s { color: var(--soft); }
+  .rv .q { flex: 1; min-width: 0; }
+  .rv .q .zh { font-weight: 700; }
+  .rv .l { font-size: 12px; font-weight: 800; color: var(--soft); white-space: nowrap; }
+
+  @media (max-width: 640px) {
+    .app { padding: 18px 14px 24px; }
+    h1 { font-size: 34px; } .lead { font-size: 16px; }
+    .hero { gap: 8px; } .mascot-wrap { width: 118px; padding-top: 58px; } .mascot-wrap img { width: 100px; }
+    .say { left: -10px; } .say .zh { font-size: 16px; }
+    .kinds { grid-template-columns: 1fr 1fr; gap: 8px; } .kind { padding: 10px; gap: 9px; } .kind .zh { width: 34px; height: 34px; font-size: 19px; } .kind span { display: none; }
+    .ladder { display: none; }
+    .prompt { padding: 20px 14px; min-height: 160px; } .prompt .hanzi { font-size: 54px; } .prompt .sentence { font-size: 24px; } .prompt .meaning { font-size: 25px; }
+    .choices { gap: 8px; } .choice { padding: 12px; font-size: 15.5px; gap: 9px; } .choice .zh { font-size: 22px; } .choice .k { width: 26px; height: 26px; }
+    .res-top { flex-direction: column; text-align: center; } .cando { align-items: center; }
+    .grid2, .next { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) { *, *::before { animation: none !important; transition: none !important; } }
 </style>
 </head>
 <body>
-<div class="topbar"><div class="logo-text">Mandarin <span>Zest</span></div></div>
 <div class="app">
 
   <!-- START -->
-  <div class="start-screen" id="startScreen">
-    <div class="hero-chars"><span class="c1">汉</span><span class="c2">语</span><span class="c3">水</span><span class="c4">平</span></div>
-    <h1 class="start-heading">What's your HSK level?</h1>
-    <p class="start-sub">An adaptive test across all HSK levels including the new HSK 7–9</p>
-    <div class="info-card">
-      <div class="info-card-title">How it works</div>
-      <div class="info-row"><div class="info-dot">1</div><span>See a Chinese character with its pinyin pronunciation</span></div>
-      <div class="info-row"><div class="info-dot">2</div><span>Choose the correct English meaning from 4 options</span></div>
-      <div class="info-row"><div class="info-dot">3</div><span>Get two right → harder words. Miss one → easier words. The test finds your ceiling.</span></div>
-    </div>
-    <div class="level-pills">
-      <div class="level-pill"><div class="pill-dot" style="background:#e65100"></div>HSK 1 · Beginner</div>
-      <div class="level-pill"><div class="pill-dot" style="background:#f57f17"></div>HSK 2 · Elementary</div>
-      <div class="level-pill"><div class="pill-dot" style="background:#2e7d32"></div>HSK 3 · Intermediate</div>
-      <div class="level-pill"><div class="pill-dot" style="background:#1565c0"></div>HSK 4 · Upper-Int.</div>
-      <div class="level-pill"><div class="pill-dot" style="background:#6a1b9a"></div>HSK 5 · Advanced</div>
-      <div class="level-pill"><div class="pill-dot" style="background:#880e4f"></div>HSK 6 · Mastery</div>
-      <div class="level-pill"><div class="pill-dot" style="background:#4a148c"></div>HSK 7–9 · Elite</div>
-    </div>
-    <button class="start-btn" onclick="startTest()">Begin Test &nbsp;→</button>
-  </div>
-
-  <!-- QUIZ -->
-  <div class="quiz-screen" id="quizScreen">
-    <div class="progress-row">
-      <span class="progress-label" id="progressLabel">Question 1 of 20</span>
-      <span class="progress-score" id="progressScore">0 correct</span>
-    </div>
-    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-    <div class="flashcard anim" id="flashcard">
-      <div class="char-display" id="charDisplay"></div>
-      <div class="pinyin-display" id="pinyinDisplay"></div>
-      <div class="card-prompt">Select the correct meaning</div>
-    </div>
-    <div class="choices" id="choices"></div>
-    <div class="feedback" id="feedback"><span class="fb-icon" id="fbIcon"></span><span id="fbText"></span></div>
-    <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next →</button>
-  </div>
-
-  <!-- RESULT -->
-  <div class="result-screen" id="resultScreen">
-    <div class="result-badge-ring">
-      <div class="result-badge-inner">
-        <div class="result-badge-level" id="rBadgeLevel">HSK 1</div>
-        <div class="result-badge-sub">Your Level</div>
+  <section class="screen on" id="sStart">
+    <div class="hero">
+      <div class="hero-text">
+        <div class="eyebrow">FREE · ABOUT 5 MINUTES · NO SIGN-UP</div>
+        <h1>What's your HSK level?</h1>
+        <p class="lead">25 quick questions that adapt to you, from your first <span class="zh">你好</span> all the way to HSK 7–9. Get your level, your strengths and a card to share.</p>
+      </div>
+      <div class="mascot-wrap" aria-hidden="true">
+        <div class="say"><span class="zh">准备好了吗？</span><small>Ready?</small></div>
+        <img src="mascot-reading.png" alt="">
       </div>
     </div>
-    <h2 class="result-heading" id="rHeading"></h2>
-    <p class="result-desc" id="rDesc"></p>
-    <div class="stats-row">
-      <div class="stat-box"><div class="stat-num" id="rCorrect">0</div><div class="stat-lbl">Correct</div></div>
-      <div class="stat-box"><div class="stat-num" id="rTotal">20</div><div class="stat-lbl">Questions</div></div>
-      <div class="stat-box"><div class="stat-num" id="rPct">0%</div><div class="stat-lbl">Accuracy</div></div>
+    <div class="kinds">
+      <div class="kind"><span class="zh" aria-hidden="true">字</span><div><b>Vocabulary</b><span>Pick the meaning of a word</span></div></div>
+      <div class="kind"><span class="zh" aria-hidden="true">听</span><div><b>Listening</b><span>Hear it, find the word</span></div></div>
+      <div class="kind"><span class="zh" aria-hidden="true">读</span><div><b>Reading</b><span>Find the characters for a meaning</span></div></div>
+      <div class="kind"><span class="zh" aria-hidden="true">句</span><div><b>Grammar</b><span>Complete a real sentence</span></div></div>
     </div>
-    <div class="level-breakdown">
-      <div class="breakdown-title">Performance by level</div>
-      <div id="breakdownRows"></div>
+    <div class="start-row">
+      <button class="btn big orange" id="startBtn" type="button">Start the test <span aria-hidden="true">→</span></button>
+      <label class="toggle"><input type="checkbox" id="pinyinToggle" checked> Show pinyin</label>
     </div>
-    <div class="cta-box">
-      <div class="cta-box-title">Ready to level up?</div>
-      <div class="cta-box-body" id="ctaBody"></div>
-    </div>
-    <div class="btn-row">
-      <button class="restart-btn" onclick="restartTest()">Try again</button>
-      <button class="share-btn" onclick="shareResult()">Share result</button>
-    </div>
-  </div>
+    <div class="fine">Don't know an answer? Skip it: guessing makes your result less accurate. Turn your sound on for the listening questions.</div>
+  </section>
 
+  <!-- QUIZ -->
+  <section class="screen" id="sQuiz">
+    <div class="bar">
+      <div class="track" aria-hidden="true"><div class="fill" id="fill"></div></div>
+      <span class="count" id="count">1 / 25</span>
+      <span class="streak" id="streak" aria-label="Streak"></span>
+    </div>
+    <div class="quiz">
+      <div class="qmain">
+        <div class="tags"><span class="tag type" id="qType"></span><span class="tag lvl" id="qLvl"></span></div>
+        <div class="prompt" id="prompt" aria-live="polite"></div>
+        <div class="choices" id="choices"></div>
+        <div class="feedback" id="feedback" role="status">
+          <img src="mascot-reading.png" alt="">
+          <div class="ft"><b id="fbTitle"></b><span id="fbText"></span></div>
+          <button class="btn green" type="button" id="nextBtn" style="padding:11px 20px;font-size:15px">Next →</button>
+        </div>
+        <button class="skip" type="button" id="skipBtn">I don't know, skip</button>
+      </div>
+      <div class="ladder" aria-hidden="true"><div class="t">CLIMBING</div><div id="ladder"></div></div>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <section class="screen" id="sResult">
+    <div class="res-top">
+      <div class="badge" id="badge"><div><small>YOUR LEVEL</small><strong id="rLevel">HSK 3</strong><em id="rClose"></em></div></div>
+      <div class="res-head">
+        <h2 id="rHead"></h2>
+        <ul class="cando" id="rCando"></ul>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="panel white">
+        <div class="t">YOUR SKILLS</div>
+        <div id="rSkills"></div>
+        <div class="note" id="rSkillNote"></div>
+      </div>
+      <div class="panel share">
+        <div class="t">SHARE YOUR LEVEL</div>
+        <canvas id="card" width="1080" height="1350" aria-label="Your shareable result card"></canvas>
+        <div class="share-btns">
+          <button class="btn orange" type="button" id="shareBtn">Share</button>
+          <button class="btn white" type="button" id="saveBtn">Save image</button>
+        </div>
+        <div class="copied" id="copied" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <div class="next" id="rOffers"></div>
+
+    <form class="mail" id="mail" novalidate>
+      <div style="font-weight:800" id="mailTitle">Get study tips for your level</div>
+      <div class="row">
+        <input type="email" id="mailEmail" placeholder="you@example.com" autocomplete="email" aria-label="Email">
+        <button class="btn dark" type="submit" style="padding:11px 20px;font-size:15px">Send me tips</button>
+      </div>
+      <label class="c"><input type="checkbox" id="mailOk">I agree to receive emails from Mandarin Zest (tips, new materials and offers). I can unsubscribe at any time.</label>
+      <div class="msg" id="mailMsg" role="status"></div>
+    </form>
+
+    <div class="links">
+      <button type="button" id="reviewBtn">See my answers</button>
+      <button type="button" id="againBtn">Take the test again</button>
+    </div>
+    <div class="review" id="review"></div>
+  </section>
 </div>
+
+<script src="words.js"></script>
 <script>
-// ═══════════════════════════════════════════════════════════════
-//  WORD BANK
-//  HSK 1–3: 50 words each
-//  HSK 4–6: 100 words each
-//  HSK 7–9: 100 words (combined elite tier, stored as level 7)
-//  Format: {h:hanzi, p:pinyin, m:meaning, d:[distractor×3]}
-// ═══════════════════════════════════════════════════════════════
-const BANK={
-// ─── HSK 1 (50 words) ──────────────────────────────────────────
-1:[
-{h:'你好',p:'nǐ hǎo',m:'hello',d:['goodbye','thank you','sorry']},
-{h:'谢谢',p:'xièxiè',m:'thank you',d:['sorry','hello','please']},
-{h:'再见',p:'zàijiàn',m:'goodbye',d:['hello','good morning','see you later']},
-{h:'水',p:'shuǐ',m:'water',d:['fire','air','earth']},
-{h:'大',p:'dà',m:'big',d:['small','tall','fast']},
-{h:'猫',p:'māo',m:'cat',d:['dog','bird','fish']},
-{h:'吃',p:'chī',m:'to eat',d:['to drink','to sleep','to walk']},
-{h:'去',p:'qù',m:'to go',d:['to come','to stay','to run']},
-{h:'好',p:'hǎo',m:'good',d:['bad','big','old']},
-{h:'人',p:'rén',m:'person',d:['place','thing','time']},
-{h:'书',p:'shū',m:'book',d:['pen','desk','bag']},
-{h:'几',p:'jǐ',m:'how many',d:['how much','why','when']},
-{h:'今天',p:'jīntiān',m:'today',d:['yesterday','tomorrow','now']},
-{h:'学生',p:'xuéshēng',m:'student',d:['teacher','doctor','friend']},
-{h:'中国',p:'Zhōngguó',m:'China',d:['Japan','France','America']},
-{h:'很',p:'hěn',m:'very',d:['not','also','just']},
-{h:'我',p:'wǒ',m:'me',d:['you','he','we']},
-{h:'他',p:'tā',m:'he',d:['she','I','they']},
-{h:'她',p:'tā',m:'she',d:['he','we','they']},
-{h:'我们',p:'wǒmen',m:'we',d:['you all','they','those']},
-{h:'什么',p:'shénme',m:'what',d:['who','where','when']},
-{h:'是',p:'shì',m:'to be',d:['to have','to want','to like']},
-{h:'有',p:'yǒu',m:'to have',d:['to be','to want','to need']},
-{h:'不',p:'bù',m:'not',d:['yes','also','only']},
-{h:'吗',p:'ma',m:'question particle',d:['negation particle','plural marker','past tense marker']},
-{h:'那',p:'nà',m:'that',d:['this','which','what']},
-{h:'这',p:'zhè',m:'this',d:['that','which','here']},
-{h:'里',p:'lǐ',m:'inside',d:['outside','above','beside']},
-{h:'来',p:'lái',m:'to come',d:['to go','to leave','to arrive']},
-{h:'上',p:'shàng',m:'above',d:['below','beside','behind']},
-{h:'下',p:'xià',m:'below',d:['above','inside','outside']},
-{h:'多',p:'duō',m:'many',d:['few','one','some']},
-{h:'少',p:'shǎo',m:'few',d:['many','more','all']},
-{h:'冷',p:'lěng',m:'cold',d:['hot','warm','cool']},
-{h:'热',p:'rè',m:'hot',d:['cold','cool','warm']},
-{h:'饭',p:'fàn',m:'meal',d:['bread','soup','snack']},
-{h:'茶',p:'chá',m:'tea',d:['coffee','juice','milk']},
-{h:'狗',p:'gǒu',m:'dog',d:['cat','pig','horse']},
-{h:'鱼',p:'yú',m:'fish',d:['bird','insect','reptile']},
-{h:'月',p:'yuè',m:'month',d:['year','day','week']},
-{h:'年',p:'nián',m:'year',d:['month','day','hour']},
-{h:'日',p:'rì',m:'day',d:['night','week','month']},
-{h:'时候',p:'shíhòu',m:'moment',d:['place','reason','method']},
-{h:'名字',p:'míngzi',m:'name',d:['address','age','job']},
-{h:'朋友',p:'péngyǒu',m:'friend',d:['family','stranger','colleague']},
-{h:'老师',p:'lǎoshī',m:'teacher',d:['student','doctor','driver']},
-{h:'爸爸',p:'bàba',m:'father',d:['mother','brother','uncle']},
-{h:'妈妈',p:'māma',m:'mother',d:['father','sister','aunt']},
-{h:'哥哥',p:'gēgē',m:'older brother',d:['younger brother','older sister','younger sister']},
-{h:'妹妹',p:'mèimei',m:'younger sister',d:['younger brother','older sister','older brother']},
-],
+/* ═══════════════════════ SETTINGS ═══════════════════════ */
+const TOTAL = 25;            // questions per test
+const START_LEVEL = 2;       // everyone starts here
+const LINKS = {
+  club: "https://www.mandarinzest.com/mandarin-zest-club",
+  startHere: "https://www.mandarinzest.com/new-to-chinese-start-here",
+  hsk1Bundle: "https://www.mandarinzest.com/shop/hsk-1-complete-learning-bundle-16",
+  shop: "https://www.mandarinzest.com/shop",
+  test: "mandarinzest.com/quick-hsk-level-test"
+};
+// Shop tag numbers for each HSK level (from the shop filters).
+const SHOP_TAG = { 1: 1, 2: 6, 3: 2, 4: 3, 5: 4, 6: 5, 7: 5 };
+// Emails go to the same Google Sheet as the Start Here form, tagged with the level.
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbwPWbx4dg8r7HWMa_uMV-2ZH6Xis7VnzEWvUgVc8G3AUzY4lnrtaooCZGgsDrwHZ9VMYg/exec";
 
-// ─── HSK 2 (50 words) ──────────────────────────────────────────
-2:[
-{h:'身体',p:'shēntǐ',m:'health',d:['mind','face','voice']},
-{h:'颜色',p:'yánsè',m:'colour',d:['shape','size','number']},
-{h:'运动',p:'yùndòng',m:'exercise',d:['music','sleep','food']},
-{h:'地方',p:'dìfang',m:'place',d:['time','reason','person']},
-{h:'第一',p:'dì yī',m:'first',d:['last','only','best']},
-{h:'觉得',p:'juédé',m:'to feel',d:['to know','to see','to hear']},
-{h:'告诉',p:'gàosu',m:'to tell',d:['to ask','to show','to forget']},
-{h:'已经',p:'yǐjīng',m:'already',d:['still','soon','never']},
-{h:'一起',p:'yīqǐ',m:'together',d:['alone','again','before']},
-{h:'比较',p:'bǐjiào',m:'relatively',d:['completely','exactly','possibly']},
-{h:'结束',p:'jiéshù',m:'to finish',d:['to start','to continue','to repeat']},
-{h:'声音',p:'shēngyīn',m:'voice',d:['light','smell','colour']},
-{h:'希望',p:'xīwàng',m:'to wish',d:['to worry','to forget','to choose']},
-{h:'眼睛',p:'yǎnjīng',m:'eyes',d:['ears','nose','mouth']},
-{h:'旁边',p:'pángbiān',m:'beside',d:['above','below','behind']},
-{h:'可以',p:'kěyǐ',m:'can',d:['must','should','want to']},
-{h:'因为',p:'yīnwèi',m:'because',d:['therefore','although','if']},
-{h:'所以',p:'suǒyǐ',m:'therefore',d:['because','but','and']},
-{h:'但是',p:'dànshì',m:'however',d:['and','so','because']},
-{h:'如果',p:'rúguǒ',m:'if',d:['because','although','when']},
-{h:'知道',p:'zhīdào',m:'to know',d:['to understand','to remember','to learn']},
-{h:'认识',p:'rènshi',m:'to know (a person)',d:['to meet','to forget','to like']},
-{h:'喜欢',p:'xǐhuān',m:'to like',d:['to love','to hate','to fear']},
-{h:'手机',p:'shǒujī',m:'mobile phone',d:['computer','camera','television']},
-{h:'电脑',p:'diànnǎo',m:'computer',d:['phone','tablet','printer']},
-{h:'问题',p:'wèntí',m:'problem',d:['answer','lesson','idea']},
-{h:'意思',p:'yìsi',m:'meaning',d:['reason','method','result']},
-{h:'事情',p:'shìqíng',m:'matter',d:['person','place','time']},
-{h:'时间',p:'shíjiān',m:'time',d:['money','weather','place']},
-{h:'地图',p:'dìtú',m:'map',d:['plan','list','ticket']},
-{h:'车站',p:'chēzhàn',m:'train station',d:['airport','hotel','hospital']},
-{h:'公共汽车',p:'gōnggòng qìchē',m:'bus',d:['taxi','subway','bicycle']},
-{h:'超市',p:'chāoshì',m:'supermarket',d:['restaurant','school','hospital']},
-{h:'公司',p:'gōngsī',m:'company',d:['school','bank','hospital']},
-{h:'工作',p:'gōngzuò',m:'job',d:['study','travel','rest']},
-{h:'学习',p:'xuéxí',m:'to study',d:['to teach','to read','to write']},
-{h:'说',p:'shuō',m:'to speak',d:['to listen','to read','to write']},
-{h:'听',p:'tīng',m:'to listen',d:['to speak','to see','to read']},
-{h:'看',p:'kàn',m:'to watch',d:['to listen','to speak','to touch']},
-{h:'写',p:'xiě',m:'to write',d:['to read','to draw','to print']},
-{h:'用',p:'yòng',m:'to use',d:['to make','to buy','to take']},
-{h:'买',p:'mǎi',m:'to buy',d:['to sell','to pay','to spend']},
-{h:'卖',p:'mài',m:'to sell',d:['to buy','to give','to take']},
-{h:'钱',p:'qián',m:'money',d:['time','food','book']},
-{h:'快',p:'kuài',m:'fast',d:['slow','early','late']},
-{h:'慢',p:'màn',m:'slow',d:['fast','early','late']},
-{h:'新',p:'xīn',m:'new',d:['old','clean','small']},
-{h:'早',p:'zǎo',m:'early',d:['late','noon','night']},
-{h:'晚',p:'wǎn',m:'late',d:['early','noon','morning']},
-{h:'周末',p:'zhōumò',m:'weekend',d:['weekday','holiday','birthday']},
-],
-
-// ─── HSK 3 (50 words) ──────────────────────────────────────────
-3:[
-{h:'环境',p:'huánjìng',m:'environment',d:['culture','economy','society']},
-{h:'附近',p:'fùjìn',m:'nearby',d:['far away','above','underground']},
-{h:'方法',p:'fāngfǎ',m:'method',d:['reason','result','material']},
-{h:'关系',p:'guānxi',m:'relationship',d:['problem','decision','limit']},
-{h:'城市',p:'chéngshì',m:'city',d:['village','country','island']},
-{h:'解释',p:'jiěshì',m:'to explain',d:['to agree','to refuse','to decide']},
-{h:'简单',p:'jiǎndān',m:'simple',d:['complex','strange','correct']},
-{h:'认真',p:'rènzhēn',m:'serious',d:['careless','lazy','shy']},
-{h:'超过',p:'chāoguò',m:'to surpass',d:['to reach','to reduce','to avoid']},
-{h:'发现',p:'fāxiàn',m:'to discover',d:['to invent','to produce','to destroy']},
-{h:'安静',p:'ānjìng',m:'quiet',d:['noisy','crowded','dark']},
-{h:'其实',p:'qíshí',m:'actually',d:['therefore','however','otherwise']},
-{h:'经验',p:'jīngyàn',m:'experience',d:['knowledge','skill','habit']},
-{h:'满意',p:'mǎnyì',m:'satisfied',d:['disappointed','curious','nervous']},
-{h:'变化',p:'biànhuà',m:'change',d:['progress','difference','result']},
-{h:'努力',p:'nǔlì',m:'to work hard',d:['to rest','to give up','to hesitate']},
-{h:'准备',p:'zhǔnbèi',m:'to prepare',d:['to finish','to begin','to plan']},
-{h:'检查',p:'jiǎnchá',m:'to inspect',d:['to repair','to clean','to measure']},
-{h:'照顾',p:'zhàogù',m:'to take care of',d:['to ignore','to leave','to help']},
-{h:'决定',p:'juédìng',m:'to decide',d:['to doubt','to suggest','to refuse']},
-{h:'选择',p:'xuǎnzé',m:'to choose',d:['to find','to change','to lose']},
-{h:'解决',p:'jiějué',m:'to solve',d:['to create','to ignore','to delay']},
-{h:'影响',p:'yǐngxiǎng',m:'influence',d:['reason','result','method']},
-{h:'参加',p:'cānjiā',m:'to participate',d:['to leave','to cancel','to avoid']},
-{h:'帮助',p:'bāngzhù',m:'to help',d:['to disturb','to ignore','to compete']},
-{h:'重要',p:'zhòngyào',m:'important',d:['interesting','common','difficult']},
-{h:'完成',p:'wánchéng',m:'to complete',d:['to start','to continue','to postpone']},
-{h:'提高',p:'tígāo',m:'to improve',d:['to reduce','to maintain','to lower']},
-{h:'感觉',p:'gǎnjué',m:'feeling',d:['thought','opinion','mood']},
-{h:'相信',p:'xiāngxìn',m:'to believe',d:['to doubt','to fear','to forget']},
-{h:'突然',p:'tūrán',m:'suddenly',d:['gradually','finally','certainly']},
-{h:'已经',p:'yǐjīng',m:'already',d:['still','never','soon']},
-{h:'继续',p:'jìxù',m:'to continue',d:['to stop','to restart','to change']},
-{h:'害怕',p:'hàipà',m:'to be afraid',d:['to be happy','to be angry','to be surprised']},
-{h:'担心',p:'dānxīn',m:'to worry',d:['to relax','to hope','to plan']},
-{h:'同意',p:'tóngyì',m:'to agree',d:['to refuse','to ignore','to question']},
-{h:'回答',p:'huídá',m:'to answer',d:['to ask','to explain','to repeat']},
-{h:'提问',p:'tíwèn',m:'to ask a question',d:['to answer','to explain','to discuss']},
-{h:'方向',p:'fāngxiàng',m:'direction',d:['distance','speed','location']},
-{h:'空气',p:'kōngqì',m:'air',d:['water','fire','soil']},
-{h:'温度',p:'wēndù',m:'temperature',d:['humidity','pressure','speed']},
-{h:'地球',p:'dìqiú',m:'the Earth',d:['the moon','the sun','a star']},
-{h:'自然',p:'zìrán',m:'nature',d:['artificial','social','economic']},
-{h:'保护',p:'bǎohù',m:'to protect',d:['to damage','to change','to study']},
-{h:'危险',p:'wēixiǎn',m:'dangerous',d:['safe','boring','strange']},
-{h:'健康',p:'jiànkāng',m:'healthy',d:['sick','tired','weak']},
-{h:'医院',p:'yīyuàn',m:'hospital',d:['school','library','station']},
-{h:'药',p:'yào',m:'medicine',d:['food','tea','vitamin']},
-{h:'锻炼',p:'duànliàn',m:'to exercise',d:['to rest','to sleep','to relax']},
-{h:'规定',p:'guīdìng',m:'rule',d:['suggestion','habit','custom']},
-],
-
-// ─── HSK 4 (100 words) ─────────────────────────────────────────
-4:[
-{h:'态度',p:'tàidù',m:'attitude',d:['ability','interest','habit']},
-{h:'复杂',p:'fùzá',m:'complicated',d:['simple','beautiful','dangerous']},
-{h:'竟然',p:'jìngrán',m:'unexpectedly',d:['gradually','immediately','obviously']},
-{h:'顺利',p:'shùnlì',m:'smooth',d:['difficult','careful','busy']},
-{h:'批评',p:'pīpíng',m:'to criticise',d:['to praise','to ignore','to forgive']},
-{h:'坚持',p:'jiānchí',m:'to persist',d:['to give up','to hesitate','to pretend']},
-{h:'麻烦',p:'máfan',m:'troublesome',d:['convenient','interesting','important']},
-{h:'推迟',p:'tuīchí',m:'to postpone',d:['to cancel','to advance','to confirm']},
-{h:'理解',p:'lǐjiě',m:'to understand',d:['to remember','to express','to ignore']},
-{h:'敢',p:'gǎn',m:'to dare',d:['to want','to need','to fear']},
-{h:'仍然',p:'réngrán',m:'still',d:['already','soon','never']},
-{h:'规律',p:'guīlǜ',m:'pattern',d:['habit','standard','method']},
-{h:'信任',p:'xìnrèn',m:'to trust',d:['to doubt','to respect','to forgive']},
-{h:'承认',p:'chéngrèn',m:'to admit',d:['to deny','to discover','to achieve']},
-{h:'严格',p:'yángé',m:'strict',d:['lenient','careless','flexible']},
-{h:'积极',p:'jījí',m:'positive',d:['negative','passive','neutral']},
-{h:'消极',p:'xiāojí',m:'negative',d:['positive','active','enthusiastic']},
-{h:'主动',p:'zhǔdòng',m:'proactive',d:['passive','forced','reluctant']},
-{h:'被动',p:'bèidòng',m:'passive',d:['active','voluntary','enthusiastic']},
-{h:'自信',p:'zìxìn',m:'self-confident',d:['humble','anxious','doubtful']},
-{h:'勇敢',p:'yǒnggǎn',m:'brave',d:['cowardly','timid','careless']},
-{h:'谦虚',p:'qiānxū',m:'modest',d:['arrogant','confident','indifferent']},
-{h:'骄傲',p:'jiāo\'ào',m:'arrogant',d:['humble','shy','honest']},
-{h:'诚实',p:'chéngshí',m:'honest',d:['dishonest','shy','strict']},
-{h:'幽默',p:'yōumò',m:'humorous',d:['serious','boring','rude']},
-{h:'热情',p:'rèqíng',m:'enthusiastic',d:['cold','indifferent','shy']},
-{h:'冷静',p:'lěngjìng',m:'calm',d:['excited','nervous','angry']},
-{h:'耐心',p:'nàixīn',m:'patient',d:['impatient','careless','reckless']},
-{h:'细心',p:'xìxīn',m:'attentive',d:['careless','reckless','hasty']},
-{h:'粗心',p:'cūxīn',m:'careless',d:['careful','patient','attentive']},
-{h:'建议',p:'jiànyì',m:'to suggest',d:['to demand','to refuse','to ignore']},
-{h:'要求',p:'yāoqiú',m:'to require',d:['to suggest','to allow','to consider']},
-{h:'支持',p:'zhīchí',m:'to support',d:['to oppose','to ignore','to doubt']},
-{h:'反对',p:'fǎnduì',m:'to oppose',d:['to support','to allow','to accept']},
-{h:'解决',p:'jiějué',m:'to solve',d:['to create','to delay','to worsen']},
-{h:'讨论',p:'tǎolùn',m:'to discuss',d:['to argue','to decide','to announce']},
-{h:'交流',p:'jiāoliú',m:'to communicate',d:['to compete','to separate','to avoid']},
-{h:'合作',p:'hézuò',m:'to cooperate',d:['to compete','to separate','to argue']},
-{h:'竞争',p:'jìngzhēng',m:'to compete',d:['to cooperate','to share','to avoid']},
-{h:'失败',p:'shībài',m:'to fail',d:['to succeed','to improve','to recover']},
-{h:'成功',p:'chénggōng',m:'to succeed',d:['to fail','to lose','to quit']},
-{h:'机会',p:'jīhuì',m:'opportunity',d:['risk','problem','limit']},
-{h:'经历',p:'jīnglì',m:'experience',d:['habit','skill','knowledge']},
-{h:'印象',p:'yìnxiàng',m:'impression',d:['opinion','feeling','image']},
-{h:'观点',p:'guāndiǎn',m:'viewpoint',d:['fact','data','decision']},
-{h:'目的',p:'mùdì',m:'purpose',d:['result','process','method']},
-{h:'效果',p:'xiàoguǒ',m:'effect',d:['reason','method','process']},
-{h:'原因',p:'yuányīn',m:'cause',d:['result','method','goal']},
-{h:'影响',p:'yǐngxiǎng',m:'to influence',d:['to create','to describe','to avoid']},
-{h:'发展',p:'fāzhǎn',m:'to develop',d:['to decline','to maintain','to destroy']},
-{h:'改变',p:'gǎibiàn',m:'to change',d:['to maintain','to preserve','to accept']},
-{h:'增加',p:'zēngjiā',m:'to increase',d:['to decrease','to maintain','to measure']},
-{h:'减少',p:'jiǎnshǎo',m:'to decrease',d:['to increase','to maintain','to measure']},
-{h:'提供',p:'tígōng',m:'to provide',d:['to request','to receive','to reject']},
-{h:'需要',p:'xūyào',m:'to need',d:['to want','to have','to use']},
-{h:'注意',p:'zhùyì',m:'to pay attention',d:['to ignore','to forget','to misunderstand']},
-{h:'负责',p:'fùzé',m:'responsible',d:['irresponsible','indifferent','confused']},
-{h:'表示',p:'biǎoshì',m:'to express',d:['to hide','to deny','to forget']},
-{h:'表现',p:'biǎoxiàn',m:'performance',d:['to hide','to ignore','to forget']},
-{h:'证明',p:'zhèngmíng',m:'to prove',d:['to question','to deny','to assume']},
-{h:'说明',p:'shuōmíng',m:'to explain',d:['to hide','to deny','to exaggerate']},
-{h:'描述',p:'miáoshù',m:'to describe',d:['to invent','to change','to deny']},
-{h:'分析',p:'fēnxī',m:'to analyse',d:['to summarise','to ignore','to exaggerate']},
-{h:'研究',p:'yánjiū',m:'to research',d:['to teach','to apply','to publish']},
-{h:'科学',p:'kēxué',m:'science',d:['art','history','politics']},
-{h:'技术',p:'jìshù',m:'technology',d:['science','art','theory']},
-{h:'信息',p:'xìnxī',m:'information',d:['knowledge','opinion','data']},
-{h:'数据',p:'shùjù',m:'data',d:['opinion','text','image']},
-{h:'网络',p:'wǎngluò',m:'network',d:['software','system','device']},
-{h:'平台',p:'píngtái',m:'platform',d:['channel','system','tool']},
-{h:'内容',p:'nèiróng',m:'content',d:['form','structure','method']},
-{h:'质量',p:'zhìliàng',m:'quality',d:['quantity','price','weight']},
-{h:'数量',p:'shùliàng',m:'quantity',d:['quality','price','size']},
-{h:'价格',p:'jiàgé',m:'price',d:['quality','weight','brand']},
-{h:'安全',p:'ānquán',m:'safe',d:['dangerous','complex','expensive']},
-{h:'现代',p:'xiàndài',m:'modern',d:['ancient','traditional','classic']},
-{h:'传统',p:'chuántǒng',m:'tradition',d:['modern','new','foreign']},
-{h:'文化',p:'wénhuà',m:'culture',d:['art','science','economy']},
-{h:'历史',p:'lìshǐ',m:'history',d:['geography','culture','politics']},
-{h:'社会',p:'shèhuì',m:'society',d:['economy','politics','culture']},
-{h:'政府',p:'zhèngfǔ',m:'government',d:['company','school','organisation']},
-{h:'法律',p:'fǎlǜ',m:'law',d:['rule','custom','morality']},
-{h:'权利',p:'quánlì',m:'entitlement',d:['duty','law','power']},
-{h:'责任',p:'zérèn',m:'responsibility',d:['right','privilege','choice']},
-{h:'义务',p:'yìwù',m:'obligation',d:['right','choice','privilege']},
-{h:'自由',p:'zìyóu',m:'freedom',d:['duty','restriction','obligation']},
-{h:'平等',p:'píngděng',m:'equality',d:['difference','privilege','hierarchy']},
-{h:'公平',p:'gōngpíng',m:'fair',d:['unfair','strict','complex']},
-{h:'尊重',p:'zūnzhòng',m:'to respect',d:['to ignore','to criticise','to compete']},
-{h:'理想',p:'lǐxiǎng',m:'ideal',d:['reality','plan','goal']},
-{h:'现实',p:'xiànshí',m:'reality',d:['ideal','dream','fantasy']},
-{h:'幸福',p:'xìngfú',m:'happiness',d:['sadness','loneliness','hardship']},
-{h:'痛苦',p:'tòngkǔ',m:'suffering',d:['happiness','comfort','pleasure']},
-{h:'紧张',p:'jǐnzhāng',m:'nervous',d:['relaxed','confident','calm']},
-{h:'放松',p:'fàngsōng',m:'to relax',d:['to tighten','to stress','to rush']},
-{h:'压力',p:'yālì',m:'stress',d:['relaxation','comfort','freedom']},
-{h:'动力',p:'dònglì',m:'motivation',d:['obstacle','pressure','result']},
-{h:'挑战',p:'tiǎozhàn',m:'challenge',d:['opportunity','reward','shortcut']},
-{h:'困难',p:'kùnnán',m:'difficulty',d:['easy','simple','comfortable']},
-{h:'进步',p:'jìnbù',m:'progress',d:['regression','standstill','achievement']},
-],
-
-// ─── HSK 5 (100 words) ─────────────────────────────────────────
-5:[
-{h:'逐渐',p:'zhújiàn',m:'gradually',d:['suddenly','barely','equally']},
-{h:'矛盾',p:'máodùn',m:'contradiction',d:['cooperation','conclusion','tradition']},
-{h:'趋势',p:'qūshì',m:'trend',d:['standard','limit','balance']},
-{h:'抽象',p:'chōuxiàng',m:'abstract',d:['concrete','complex','ancient']},
-{h:'歧视',p:'qíshì',m:'discrimination',d:['appreciation','recognition','competition']},
-{h:'宽容',p:'kuānróng',m:'tolerant',d:['strict','indifferent','emotional']},
-{h:'倡导',p:'chàngdǎo',m:'to advocate',d:['to oppose','to evaluate','to implement']},
-{h:'繁荣',p:'fánróng',m:'prosperous',d:['declining','isolated','chaotic']},
-{h:'执行',p:'zhíxíng',m:'to implement',d:['to propose','to review','to suspend']},
-{h:'陶醉',p:'táozuì',m:'enchanted',d:['confused','bored','frightened']},
-{h:'遏制',p:'èzhì',m:'to restrain',d:['to encourage','to release','to ignore']},
-{h:'渗透',p:'shèntòu',m:'to infiltrate',d:['to overflow','to evaporate','to crystallize']},
-{h:'迁就',p:'qiānjiù',m:'to give in',d:['to insist','to negotiate','to abandon']},
-{h:'融合',p:'rónghé',m:'to merge',d:['to separate','to compete','to replace']},
-{h:'侥幸',p:'jiǎoxìng',m:'lucky by chance',d:['unfortunate','deserved','planned']},
-{h:'彻底',p:'chèdǐ',m:'thorough',d:['partial','superficial','gradual']},
-{h:'深刻',p:'shēnkè',m:'profound',d:['shallow','brief','vague']},
-{h:'广泛',p:'guǎngfàn',m:'widespread',d:['narrow','limited','specific']},
-{h:'普遍',p:'pǔbiàn',m:'universal',d:['rare','special','unique']},
-{h:'特殊',p:'tèshū',m:'exceptional',d:['ordinary','common','normal']},
-{h:'典型',p:'diǎnxíng',m:'typical',d:['unusual','unique','rare']},
-{h:'独特',p:'dútè',m:'distinctive',d:['common','typical','ordinary']},
-{h:'创新',p:'chuàngxīn',m:'innovation',d:['tradition','imitation','repetition']},
-{h:'突破',p:'tūpò',m:'breakthrough',d:['to maintain','to retreat','to stagnate']},
-{h:'局限',p:'júxiàn',m:'limitation',d:['freedom','expansion','improvement']},
-{h:'束缚',p:'shùfù',m:'to bind',d:['to free','to encourage','to support']},
-{h:'克服',p:'kèfú',m:'to overcome',d:['to avoid','to surrender','to complain']},
-{h:'应对',p:'yìngduì',m:'to cope with',d:['to ignore','to create','to observe']},
-{h:'协调',p:'xiétiáo',m:'to coordinate',d:['to conflict','to separate','to ignore']},
-{h:'均衡',p:'jūnhéng',m:'balanced',d:['uneven','extreme','chaotic']},
-{h:'稳定',p:'wěndìng',m:'stable',d:['unstable','fluctuating','chaotic']},
-{h:'波动',p:'bōdòng',m:'fluctuation',d:['stability','growth','decline']},
-{h:'振动',p:'zhèndòng',m:'to vibrate',d:['to expand','to shrink','to rotate']},
-{h:'激励',p:'jīlì',m:'to inspire',d:['to discourage','to tire','to confuse']},
-{h:'鼓励',p:'gǔlì',m:'to encourage',d:['to discourage','to criticise','to ignore']},
-{h:'挫折',p:'cuòzhé',m:'setback',d:['success','reward','progress']},
-{h:'磨练',p:'móliàn',m:'to temper through hardship',d:['to relax','to avoid','to shortcut']},
-{h:'坚韧',p:'jiānrèn',m:'resilient',d:['fragile','weak','timid']},
-{h:'脆弱',p:'cuìruò',m:'fragile',d:['strong','resilient','firm']},
-{h:'敏感',p:'mǐngǎn',m:'sensitive',d:['indifferent','numb','calm']},
-{h:'复苏',p:'fùsū',m:'to revive',d:['to decline','to collapse','to stagnate']},
-{h:'衰退',p:'shuāituì',m:'to decline',d:['to grow','to recover','to stabilise']},
-{h:'扩张',p:'kuòzhāng',m:'to expand',d:['to shrink','to maintain','to transfer']},
-{h:'收缩',p:'shōusuō',m:'to shrink',d:['to expand','to grow','to stretch']},
-{h:'转化',p:'zhuǎnhuà',m:'to transform',d:['to maintain','to reverse','to copy']},
-{h:'演变',p:'yǎnbiàn',m:'to evolve',d:['to remain','to return','to collapse']},
-{h:'形成',p:'xíngchéng',m:'to form',d:['to destroy','to separate','to reverse']},
-{h:'构成',p:'gòuchéng',m:'to constitute',d:['to destroy','to divide','to remove']},
-{h:'体现',p:'tǐxiàn',m:'to embody',d:['to hide','to negate','to distort']},
-{h:'揭示',p:'jiēshì',m:'to reveal',d:['to hide','to exaggerate','to ignore']},
-{h:'阐述',p:'chǎnshù',m:'to elaborate',d:['to summarise','to deny','to conceal']},
-{h:'归纳',p:'guīnà',m:'to summarise',d:['to expand','to detail','to contradict']},
-{h:'推断',p:'tuīduàn',m:'to infer',d:['to observe','to guess','to report']},
-{h:'验证',p:'yànzhèng',m:'to verify',d:['to assume','to deny','to exaggerate']},
-{h:'修正',p:'xiūzhèng',m:'to revise',d:['to confirm','to ignore','to copy']},
-{h:'补充',p:'bǔchōng',m:'to supplement',d:['to remove','to replace','to reduce']},
-{h:'整合',p:'zhěnghé',m:'to integrate',d:['to divide','to copy','to ignore']},
-{h:'优化',p:'yōuhuà',m:'to optimise',d:['to degrade','to simplify','to complicate']},
-{h:'评估',p:'pínggū',m:'to evaluate',d:['to ignore','to invent','to exaggerate']},
-{h:'监督',p:'jiāndū',m:'to supervise',d:['to ignore','to trust blindly','to praise']},
-{h:'约束',p:'yuēshù',m:'to constrain',d:['to free','to encourage','to expand']},
-{h:'规范',p:'guīfàn',m:'standard',d:['exception','custom','preference']},
-{h:'机制',p:'jīzhì',m:'mechanism',d:['phenomenon','result','appearance']},
-{h:'体制',p:'tǐzhì',m:'system',d:['tradition','culture','custom']},
-{h:'制度',p:'zhìdù',m:'institution',d:['habit','custom','tradition']},
-{h:'政策',p:'zhèngcè',m:'policy',d:['law','custom','suggestion']},
-{h:'策略',p:'cèlüè',m:'strategy',d:['goal','result','method']},
-{h:'措施',p:'cuòshī',m:'measure',d:['obstacle','result','suggestion']},
-{h:'方案',p:'fāng\'àn',m:'plan',d:['goal','result','principle']},
-{h:'原则',p:'yuánzé',m:'principle',d:['rule','habit','exception']},
-{h:'标准',p:'biāozhǔn',m:'criterion',d:['exception','preference','opinion']},
-{h:'依据',p:'yījù',m:'basis',d:['conclusion','assumption','opinion']},
-{h:'前提',p:'qiántí',m:'prerequisite',d:['result','conclusion','exception']},
-{h:'基础',p:'jīchǔ',m:'foundation',d:['peak','result','structure']},
-{h:'核心',p:'héxīn',m:'core',d:['surface','edge','detail']},
-{h:'关键',p:'guānjiàn',m:'crucial',d:['minor','optional','supplementary']},
-{h:'本质',p:'běnzhì',m:'essence',d:['appearance','surface','form']},
-{h:'现象',p:'xiànxiàng',m:'phenomenon',d:['essence','cause','result']},
-{h:'规模',p:'guīmó',m:'scale',d:['quality','speed','depth']},
-{h:'程度',p:'chéngdù',m:'degree',d:['quantity','direction','limit']},
-{h:'层次',p:'céngcì',m:'hierarchy',d:['sequence','direction','scope']},
-{h:'角度',p:'jiǎodù',m:'perspective',d:['distance','direction','position']},
-{h:'领域',p:'lǐngyù',m:'domain',d:['boundary','level','aspect']},
-{h:'范畴',p:'fànchóu',m:'realm',d:['detail','example','exception']},
-{h:'概念',p:'gàiniàn',m:'concept',d:['fact','example','data']},
-{h:'理念',p:'lǐniàn',m:'philosophy',d:['fact','method','result']},
-{h:'意识',p:'yìshí',m:'awareness',d:['behaviour','habit','method']},
-{h:'观念',p:'guānniàn',m:'notion',d:['fact','data','result']},
-{h:'价值',p:'jiàzhí',m:'value',d:['price','quality','quantity']},
-{h:'意义',p:'yìyì',m:'significance',d:['purpose','method','result']},
-{h:'作用',p:'zuòyòng',m:'function',d:['cause','result','method']},
-{h:'影响力',p:'yǐngxiǎnglì',m:'influence',d:['popularity','fame','authority']},
-{h:'竞争力',p:'jìngzhēnglì',m:'competitiveness',d:['productivity','creativity','efficiency']},
-{h:'创造力',p:'chuàngzàolì',m:'creativity',d:['competitiveness','productivity','efficiency']},
-{h:'执行力',p:'zhíxínglì',m:'ability to execute',d:['creativity','planning ability','adaptability']},
-{h:'适应',p:'shìyìng',m:'to adapt',d:['to resist','to ignore','to escape']},
-{h:'融入',p:'róngrù',m:'to blend in',d:['to stand out','to exclude','to separate']},
-{h:'排斥',p:'páichì',m:'to exclude',d:['to attract','to include','to welcome']},
-{h:'包容',p:'bāoróng',m:'to be inclusive',d:['to exclude','to criticise','to limit']},
-{h:'传播',p:'chuánbō',m:'to disseminate',d:['to receive','to contain','to hide']},
-],
-
-// ─── HSK 6 (100 words) ─────────────────────────────────────────
-6:[
-{h:'渊博',p:'yuānbó',m:'profound and erudite',d:['ordinary','superficial','eloquent']},
-{h:'斟酌',p:'zhēnzhuó',m:'to deliberate carefully',d:['to procrastinate','to boast','to ignore']},
-{h:'晦涩',p:'huìsè',m:'obscure and hard to understand',d:['clear and vivid','brief','long-winded']},
-{h:'凛然',p:'lǐnrán',m:'awe-inspiring',d:['cheerful','melancholic','indifferent']},
-{h:'瞬息',p:'shùnxī',m:'in an instant',d:['over time','at once','year by year']},
-{h:'蹉跎',p:'cuōtuó',m:'to waste time',d:['to strive hard','to reminisce','to accumulate']},
-{h:'叱咤',p:'chìzhà',m:'commanding',d:['submissive','indecisive','forgiving']},
-{h:'沧桑',p:'cāngsāng',m:'vicissitudes of life',d:['prosperity','nostalgia','chaos']},
-{h:'迂腐',p:'yūfǔ',m:'pedantic',d:['innovative','pragmatic','elegant']},
-{h:'褒贬',p:'bāobiǎn',m:'praise and criticism',d:['acceptance','silence','exaggeration']},
-{h:'踌躇',p:'chóuchú',m:'to hesitate',d:['to decide firmly','to act rashly','to speak bluntly']},
-{h:'恣意',p:'zìyì',m:'wantonly',d:['carefully','reluctantly','modestly']},
-{h:'弥漫',p:'mímàn',m:'to pervade',d:['to concentrate','to scatter','to settle']},
-{h:'豁达',p:'huòdá',m:'magnanimous',d:['narrow-minded','pessimistic','impulsive']},
-{h:'臆断',p:'yìduàn',m:'to conclude subjectively',d:['to reason objectively','to consult','to withhold judgment']},
-{h:'矫揉造作',p:'jiǎo róu zào zuò',m:'affected',d:['sincere','straightforward','composed']},
-{h:'瞻前顾后',p:'zhān qián gù hòu',m:'overcautious',d:['decisive','bold','careless']},
-{h:'力挽狂澜',p:'lì wǎn kuánglán',m:'to save a desperate situation',d:['to give up','to observe','to worsen']},
-{h:'纸上谈兵',p:'zhǐ shàng tán bīng',m:'empty theorising',d:['hands-on approach','practical method','proven strategy']},
-{h:'一蹴而就',p:'yī cù ér jiù',m:'to accomplish at one stroke',d:['to fail repeatedly','to take a long time','to rely on others']},
-{h:'无懈可击',p:'wú xiè kě jī',m:'unassailable',d:['easily criticised','controversial','incomplete']},
-{h:'鞭辟入里',p:'biān pì rù lǐ',m:'incisive and penetrating analysis',d:['superficial','vague','misleading']},
-{h:'浑然天成',p:'hún rán tiān chéng',m:'perfectly natural',d:['artificial','forced','awkward']},
-{h:'恰如其分',p:'qià rú qí fèn',m:'just right',d:['exaggerated','insufficient','misplaced']},
-{h:'耳濡目染',p:'ěr rú mù rǎn',m:'influenced by what one constantly sees and hears',d:['learned in isolation','taught formally','self-taught']},
-{h:'潜移默化',p:'qián yí mò huà',m:'imperceptible influence',d:['sudden change','deliberate teaching','open resistance']},
-{h:'举一反三',p:'jǔ yī fǎn sān',m:'to draw inferences from one example',d:['to memorise mechanically','to follow rules strictly','to avoid generalising']},
-{h:'触类旁通',p:'chù lèi páng tōng',m:'mastery in one leads to understanding others',d:['limited to one field','unable to transfer skills','relying on memory']},
-{h:'循序渐进',p:'xún xù jiàn jìn',m:'to advance step by step',d:['to jump to conclusions','to skip steps','to rush forward']},
-{h:'一针见血',p:'yī zhēn jiàn xuè',m:'to hit the nail on the head',d:['to beat around the bush','to exaggerate','to misunderstand']},
-{h:'望洋兴叹',p:'wàng yáng xīng tàn',m:'to feel helpless before a great challenge',d:['to embrace a challenge','to achieve easily','to ignore difficulty']},
-{h:'杯水车薪',p:'bēi shuǐ chē xīn',m:'a drop in the bucket',d:['more than enough','a significant contribution','barely noticeable']},
-{h:'画龙点睛',p:'huà lóng diǎn jīng',m:'to add the finishing touch',d:['to ruin at the last moment','to start from scratch','to over-decorate']},
-{h:'推陈出新',p:'tuī chén chū xīn',m:'to weed out the old and bring forth the new',d:['to preserve tradition','to copy old methods','to avoid change']},
-{h:'融会贯通',p:'róng huì guàn tōng',m:'to achieve thorough mastery',d:['to memorise superficially','to know only one aspect','to forget easily']},
-{h:'博大精深',p:'bó dà jīng shēn',m:'broad and profound',d:['narrow and shallow','simple and clear','rigid and limited']},
-{h:'源远流长',p:'yuán yuǎn liú cháng',m:'far-reaching',d:['short-lived','recent','limited in scope']},
-{h:'绵延不断',p:'mián yán bù duàn',m:'continuous',d:['brief and scattered','intermittent','abrupt']},
-{h:'生生不息',p:'shēng shēng bù xī',m:'endless vitality',d:['stagnant','declining','short-lived']},
-{h:'推波助澜',p:'tuī bō zhù lán',m:'to fan the flames',d:['to calm down','to resolve','to intervene']},
-{h:'不遗余力',p:'bù yí yú lì',m:'to spare no effort',d:['to be half-hearted','to give up midway','to do the minimum']},
-{h:'精益求精',p:'jīng yì qiú jīng',m:'to strive for excellence',d:['to be satisfied easily','to cut corners','to avoid feedback']},
-{h:'苦口婆心',p:'kǔ kǒu pó xīn',m:'to give earnest and well-meaning advice',d:['to criticise harshly','to flatter blindly','to stay silent']},
-{h:'鼓舞人心',p:'gǔwǔ rénxīn',m:'inspiring',d:['discouraging','alarming','confusing']},
-{h:'引人入胜',p:'yǐn rén rù shèng',m:'captivating',d:['tedious','confusing','discouraging']},
-{h:'耐人寻味',p:'nài rén xún wèi',m:'thought-provoking',d:['straightforward','empty','trivial']},
-{h:'意味深长',p:'yìwèi shēncháng',m:'full of implications',d:['superficial','empty','obvious']},
-{h:'语重心长',p:'yǔzhòng xīncháng',m:'sincere and earnest in speech',d:['frivolous','sarcastic','blunt']},
-{h:'字斟句酌',p:'zì zhēn jù zhuó',m:'to weigh every word carefully',d:['to speak carelessly','to exaggerate freely','to remain silent']},
-{h:'洋洋洒洒',p:'yáng yáng sǎ sǎ',m:'flowing and prolific in writing',d:['brief and concise','dry and boring','vague and unclear']},
-{h:'文采飞扬',p:'wén cǎi fēi yáng',m:'brilliant and elegant writing',d:['dull and dry','vague and shallow','stiff and awkward']},
-{h:'旁征博引',p:'páng zhēng bó yǐn',m:'to cite numerous sources',d:['to argue from one source','to speak without evidence','to avoid references']},
-{h:'鞠躬尽瘁',p:'jū gōng jìn cuì',m:'to devote oneself entirely',d:['to be half-hearted','to serve reluctantly','to work for personal gain']},
-{h:'宵衣旰食',p:'xiāo yī gàn shí',m:'to work tirelessly',d:['to live luxuriously','to sleep all day','to rest frequently']},
-{h:'废寝忘食',p:'fèi qǐn wàng shí',m:'to neglect sleep and food while working',d:['to maintain balance','to rest adequately','to enjoy leisure']},
-{h:'兢兢业业',p:'jīng jīng yè yè',m:'diligent and conscientious',d:['careless and lazy','impulsive and reckless','passive and indifferent']},
-{h:'处变不惊',p:'chǔ biàn bù jīng',m:'to remain calm amid change',d:['to panic easily','to flee from difficulty','to be shaken']},
-{h:'临危不惧',p:'lín wēi bù jù',m:'to face danger without fear',d:['to panic in crisis','to avoid risk','to surrender']},
-{h:'居安思危',p:'jū ān sī wēi',m:'to think of danger in times of safety',d:['to ignore future risks','to only enjoy the present','to be overly optimistic']},
-{h:'防患未然',p:'fáng huàn wèi rán',m:'to prevent trouble before it arises',d:['to react after the fact','to ignore warnings','to underestimate risk']},
-{h:'亡羊补牢',p:'wáng yáng bǔ láo',m:'better late than never',d:['to prevent in advance','to give up after failure','to repeat mistakes']},
-{h:'曲径通幽',p:'qū jìng tōng yōu',m:'a winding path leads to a secluded spot',d:['a direct path leads anywhere','no path leads forward','beauty is only on the surface']},
-{h:'峰回路转',p:'fēng huí lù zhuǎn',m:'a sudden turn for the better',d:['a steady decline','no change in sight','a gradual improvement']},
-{h:'柳暗花明',p:'liǔ àn huā míng',m:'a new hope after despair',d:['continued hardship','clear progress','permanent darkness']},
-{h:'时过境迁',p:'shí guò jìng qiān',m:'times and circumstances change',d:['everything stays the same','history repeats exactly','the past returns']},
-{h:'物是人非',p:'wù shì rén fēi',m:'things remain but people change',d:['everything has changed','nothing has changed','people return but things do not']},
-{h:'盛极而衰',p:'shèng jí ér shuāi',m:'decline follows the peak',d:['growth is always sustainable','strength guarantees longevity','peaks are permanent']},
-{h:'否极泰来',p:'pǐ jí tài lái',m:'good fortune follows misfortune',d:['misfortune follows good fortune','hardship has no end','luck is random']},
-{h:'隐约其辞',p:'yǐnyuē qí cí',m:'to speak vaguely',d:['to speak directly','to remain silent','to lie clearly']},
-{h:'闪烁其词',p:'shǎnshuò qí cí',m:'to speak evasively',d:['to be straightforward','to admit clearly','to argue firmly']},
-{h:'含糊其辞',p:'hánhu qí cí',m:'to be ambiguous',d:['to be precise','to be direct','to be silent']},
-{h:'言简意赅',p:'yán jiǎn yì gāi',m:'concise and comprehensive',d:['long-winded and vague','brief but incomplete','clear but repetitive']},
-{h:'言之凿凿',p:'yán zhī záo záo',m:'to speak with certainty',d:['to speak vaguely','to guess wildly','to remain silent']},
-{h:'振聋发聩',p:'zhèn lóng fā kuì',m:'eye-opening',d:['lulling to sleep','reinforcing ignorance','entertaining only']},
-{h:'针砭时弊',p:'zhēn biān shí bì',m:'incisive social criticism',d:['to praise the status quo','to avoid controversy','to entertain the public']},
-{h:'振振有词',p:'zhèn zhèn yǒu cí',m:'to speak plausibly but wrongly',d:['to speak humbly','to remain silent','to admit fault']},
-{h:'众说纷纭',p:'zhòng shuō fēn yún',m:'many differing opinions',d:['unanimous agreement','absolute silence','single authoritative view']},
-{h:'莫衷一是',p:'mò zhōng yī shì',m:'unable to reach consensus',d:['unanimous agreement','clear conclusion','decisive vote']},
-{h:'求同存异',p:'qiú tóng cún yì',m:'to seek common ground while respecting differences',d:['to insist on one view','to avoid compromise','to ignore differences']},
-{h:'殊途同归',p:'shū tú tóng guī',m:'different paths lead to the same goal',d:['all paths lead nowhere','only one path succeeds','every journey is unique']},
-{h:'见仁见智',p:'jiàn rén jiàn zhì',m:'different people have different views',d:['only one correct interpretation','all views are wrong','facts are indisputable']},
-{h:'各抒己见',p:'gè shū jǐ jiàn',m:'everyone expresses their own view',d:['only the leader speaks','no one shares opinions','views are hidden']},
-{h:'畅所欲言',p:'chàng suǒ yù yán',m:'to speak freely',d:['to stay silent','to speak with restraint','to lie']},
-{h:'知无不言',p:'zhī wú bù yán',m:'to say everything one knows',d:['to be secretive','to pretend ignorance','to speak partially']},
-{h:'推心置腹',p:'tuī xīn zhì fù',m:'to speak from the heart',d:['to be evasive','to flatter insincerely','to remain distant']},
-{h:'开诚布公',p:'kāi chéng bù gōng',m:'frank and open',d:['secretive and calculating','flattering and dishonest','cautious and reserved']},
-{h:'坦诚相待',p:'tǎnchéng xiāngdài',m:'to treat each other with honesty',d:['to be guarded','to be deceptive','to be indifferent']},
-{h:'推己及人',p:'tuī jǐ jí rén',m:'to empathise',d:['to prioritise oneself','to ignore others','to judge harshly']},
-{h:'设身处地',p:'shè shēn chǔ dì',m:'to put oneself in another\'s position',d:['to observe from a distance','to judge objectively','to remain detached']},
-{h:'感同身受',p:'gǎn tóng shēn shòu',m:'to feel as if it happened to oneself',d:['to remain unmoved','to observe coldly','to empathise intellectually']},
-{h:'力所能及',p:'lì suǒ néng jí',m:'within one\'s ability',d:['beyond one\'s ability','at one\'s limit','against one\'s will']},
-{h:'量力而行',p:'liàng lì ér xíng',m:'to act within one\'s means',d:['to overreach','to do the minimum','to rely on others']},
-{h:'恰到好处',p:'qià dào hǎo chù',m:'perfectly fitting',d:['overdone','insufficient','misplaced']},
-{h:'适可而止',p:'shì kě ér zhǐ',m:'to know when to stop',d:['to continue regardless','to give up too soon','to push to the extreme']},
-{h:'过犹不及',p:'guò yóu bù jí',m:'too much is as bad as too little',d:['more is always better','less is always worse','extremes are harmless']},
-{h:'无中生有',p:'wú zhōng shēng yǒu',m:'to fabricate',d:['to build on solid facts','to confirm the truth','to exaggerate slightly']},
-{h:'半途而废',p:'bàn tú ér fèi',m:'to give up halfway',d:['to complete the task','to start strongly','to pause and reflect']},
-{h:'知难而退',p:'zhī nán ér tuì',m:'to retreat when faced with difficulty',d:['to persist despite difficulty','to seek help','to find an alternative']},
-{h:'虎头蛇尾',p:'hǔ tóu shé wěi',m:'a strong start but weak finish',d:['consistent effort throughout','strong finish after slow start','steady improvement']},
-{h:'叶落归根',p:'yè luò guī gēn',m:'returning to one\'s origins',d:['to wander forever','to put down new roots','to forget one\'s past']},
-],
-
-// ─── HSK 7–9 / Elite (100 words) ────────────────────────────────
-7:[
-{h:'鞭长莫及',p:'biān cháng mò jí',m:'beyond one\'s reach / too far to help',d:['easily accessible','within reach','directly controllable']},
-{h:'差强人意',p:'chā qiáng rén yì',m:'barely satisfactory',d:['extremely impressive','deeply disappointing','completely acceptable']},
-{h:'功亏一篑',p:'gōng kuī yī kuì',m:'to fail on the verge of success',d:['to succeed at the last moment','to start strongly','to build steadily']},
-{h:'积毁销骨',p:'jī huǐ xiāo gǔ',m:'accumulated slander can destroy',d:['compliments build up','truth always wins','silence protects']},
-{h:'因噎废食',p:'yīn yē fèi shí',m:'to overreact to a small risk',d:['to accept all risks','to weigh benefits carefully','to act despite fear']},
-{h:'讳疾忌医',p:'huì jí jì yī',m:'to hide one\'s illness and refuse treatment / to avoid criticism',d:['to seek help readily','to admit fault quickly','to embrace advice']},
-{h:'叶公好龙',p:'Yè Gōng hào lóng',m:'to profess to love something but fear the real thing',d:['to love something genuinely','to face fears head-on','to be indifferent to both']},
-{h:'掩耳盗铃',p:'yǎn ěr dào líng',m:'to deceive oneself',d:['to face reality','to solve problems directly','to seek honest advice']},
-{h:'郑人买履',p:'Zhèng rén mǎi lǚ',m:'to follow rules mechanically while ignoring reality',d:['to adapt flexibly','to use common sense','to trust one\'s own judgment']},
-{h:'买椟还珠',p:'mǎi dú huán zhū',m:'to miss the essential',d:['to choose the most valuable','to see through appearances','to make the right trade-off']},
-{h:'刻舟求剑',p:'kè zhōu qiú jiàn',m:'to use outdated methods for new problems',d:['to adapt to new circumstances','to abandon old methods','to test new approaches']},
-{h:'守株待兔',p:'shǒu zhū dài tù',m:'to wait passively for luck',d:['to actively seek opportunities','to plan for the future','to adapt to change']},
-{h:'邯郸学步',p:'Hándān xué bù',m:'to imitate others and lose one\'s own style',d:['to learn from others wisely','to improve through imitation','to develop one\'s own skill']},
-{h:'画蛇添足',p:'huà shé tiān zú',m:'to ruin something by overdoing it',d:['to add the finishing touch','to leave something unfinished','to improve gradually']},
-{h:'滥竽充数',p:'làn yú chōng shù',m:'to be unqualified',d:['to be selected on merit','to exceed expectations','to lead by example']},
-{h:'按图索骥',p:'àn tú suǒ jì',m:'a mechanical approach',d:['to adapt flexibly','to improvise','to think creatively']},
-{h:'南辕北辙',p:'nán yuán běi zhé',m:'actions contrary to one\'s goals',d:['to act consistently with goals','to align effort with aim','to achieve efficiently']},
-{h:'隔靴搔痒',p:'gé xuē sāo yǎng',m:'to scratch without getting to the point',d:['to address the root cause','to be direct and effective','to solve precisely']},
-{h:'隔岸观火',p:'gé àn guān huǒ',m:'indifference to others\' troubles',d:['to rush to help','to intervene decisively','to share the burden']},
-{h:'火上加油',p:'huǒ shàng jiā yóu',m:'to make things worse',d:['to calm the situation','to resolve a conflict','to prevent escalation']},
-{h:'适得其反',p:'shì dé qí fǎn',m:'to achieve the opposite of one\'s intention',d:['to achieve exactly what was planned','to partially succeed','to have no effect']},
-{h:'矫枉过正',p:'jiǎo wǎng guò zhèng',m:'to overcorrect',d:['to correct precisely','to under-correct','to maintain balance']},
-{h:'以偏概全',p:'yǐ piān gài quán',m:'to generalise from a single case',d:['to reason from broad evidence','to consider all aspects','to avoid hasty conclusions']},
-{h:'管中窥豹',p:'guǎn zhōng kuī bào',m:'a partial view',d:['to see the full picture','to overlook nothing','to analyse comprehensively']},
-{h:'坐井观天',p:'zuò jǐng guān tiān',m:'a narrow-minded view',d:['to have a broad perspective','to see the bigger picture','to learn from the world']},
-{h:'夜郎自大',p:'Yèláng zì dà',m:'arrogant ignorance of the world',d:['humble self-awareness','accurate self-assessment','openness to new knowledge']},
-{h:'班门弄斧',p:'Bān mén nòng fǔ',m:'to show off in front of an expert',d:['to learn humbly from experts','to acknowledge one\'s limits','to defer to authority']},
-{h:'东施效颦',p:'Dōng Shī xiào pín',m:'blind imitation that makes things worse',d:['imitation that leads to mastery','genuine inspiration','selective learning']},
-{h:'不自量力',p:'bù zì liàng lì',m:'to overestimate one\'s abilities',d:['to know one\'s limits','to be realistically ambitious','to plan carefully']},
-{h:'好高骛远',p:'hào gāo wù yuǎn',m:'impractical ambition',d:['to be realistically ambitious','to set achievable goals','to plan step by step']},
-{h:'急功近利',p:'jí gōng jìn lì',m:'short-sighted',d:['patient and long-term thinking','indifferent to results','strategic planning']},
-{h:'浅尝辄止',p:'qiǎn cháng zhé zhǐ',m:'lack of depth',d:['to persevere','to go deep','to pursue mastery']},
-{h:'一知半解',p:'yī zhī bàn jiě',m:'superficial understanding',d:['thorough understanding','complete mastery','deep expertise']},
-{h:'不求甚解',p:'bù qiú shèn jiě',m:'satisfied with shallow knowledge',d:['to pursue deep understanding','to learn rigorously','to ask probing questions']},
-{h:'望文生义',p:'wàng wén shēng yì',m:'to misread meaning',d:['to understand in context','to grasp nuance','to decode correctly']},
-{h:'断章取义',p:'duàn zhāng qǔ yì',m:'to quote out of context',d:['to quote accurately','to interpret faithfully','to understand fully']},
-{h:'强词夺理',p:'qiǎng cí duó lǐ',m:'to twist facts',d:['to argue logically','to concede defeat','to seek truth']},
-{h:'巧言令色',p:'qiǎo yán lìng sè',m:'insincerity',d:['sincere praise','honest feedback','genuine warmth']},
-{h:'阿谀奉承',p:'ē yú fèng chéng',m:'to flatter',d:['to criticise honestly','to praise sincerely','to advise earnestly']},
-{h:'口蜜腹剑',p:'kǒu mì fù jiàn',m:'two-faced',d:['sincere and straightforward','honest and loyal','openly critical']},
-{h:'表里不一',p:'biǎo lǐ bù yī',m:'saying one thing and doing another',d:['consistent in word and deed','transparent in motive','honest in expression']},
-{h:'言行不一',p:'yán xíng bù yī',m:'words and actions don\'t match',d:['consistent and reliable','honest and direct','open and transparent']},
-{h:'出尔反尔',p:'chū ěr fǎn ěr',m:'to go back on one\'s word',d:['to keep one\'s promise','to be consistent','to act with integrity']},
-{h:'食言而肥',p:'shí yán ér féi',m:'to grow fat on broken promises',d:['to honour one\'s commitments','to gain by working hard','to earn respect']},
-{h:'言而无信',p:'yán ér wú xìn',m:'untrustworthy',d:['reliable and trustworthy','consistent and honest','known for keeping promises']},
-{h:'无可厚非',p:'wú kě hòu fēi',m:'not blameworthy',d:['clearly wrong','highly praiseworthy','completely perfect']},
-{h:'无可非议',p:'wú kě fēi yì',m:'irreproachable',d:['highly controversial','slightly flawed','openly criticised']},
-{h:'无懈可击',p:'wú xiè kě jī',m:'impeccable',d:['easily criticised','full of flaws','open to challenge']},
-{h:'天衣无缝',p:'tiān yī wú féng',m:'perfect and seamless',d:['obviously flawed','partially finished','rough and visible']},
-{h:'无与伦比',p:'wú yǔ lún bǐ',m:'unrivalled',d:['mediocre','slightly above average','among the best']},
-{h:'出类拔萃',p:'chū lèi bá cuì',m:'to stand out from others',d:['to blend in','to remain average','to fall behind']},
-{h:'鹤立鸡群',p:'hè lì jī qún',m:'to stand out in a crowd',d:['to blend in with others','to lag behind','to be unnoticed']},
-{h:'绝无仅有',p:'jué wú jǐn yǒu',m:'one of a kind',d:['very common','widely reproduced','easily replaced']},
-{h:'罕见',p:'hǎnjiàn',m:'rare',d:['common','frequent','widespread']},
-{h:'卓越',p:'zhuóyuè',m:'outstanding',d:['mediocre','average','ordinary']},
-{h:'非凡',p:'fēifán',m:'extraordinary',d:['ordinary','routine','expected']},
-{h:'超凡脱俗',p:'chāo fán tuō sú',m:'transcendent',d:['average and worldly','conventional and ordinary','rooted in everyday life']},
-{h:'登峰造极',p:'dēng fēng zào jí',m:'to reach the pinnacle',d:['to remain at the base','to plateau midway','to decline from the top']},
-{h:'炉火纯青',p:'lú huǒ chún qīng',m:'mastery of skill',d:['just beginning','making progress','almost there']},
-{h:'挥洒自如',p:'huī sǎ zì rú',m:'to write or act with effortless ease',d:['to struggle with difficulty','to work mechanically','to produce with effort']},
-{h:'游刃有余',p:'yóu rèn yǒu yú',m:'to handle with great ease',d:['to struggle to cope','to manage barely','to need assistance']},
-{h:'驾轻就熟',p:'jià qīng jiù shú',m:'to handle with practised ease',d:['to face an unfamiliar task','to struggle with basics','to need guidance']},
-{h:'胸有成竹',p:'xiōng yǒu chéng zhú',m:'to have a well-thought-out plan',d:['to act on impulse','to be unprepared','to improvise']},
-{h:'成竹在胸',p:'chéng zhú zài xiōng',m:'confident with a complete plan',d:['uncertain and hesitant','without a clear goal','acting blindly']},
-{h:'深谋远虑',p:'shēn móu yuǎn lǜ',m:'far-sighted and strategically wise',d:['short-sighted','impulsive','reactive']},
-{h:'运筹帷幄',p:'yùn chóu wéi wò',m:'a brilliant strategist',d:['to react after events','to act without a plan','to delegate entirely']},
-{h:'未雨绸缪',p:'wèi yǔ chóu móu',m:'to prepare before trouble comes',d:['to react after disaster','to ignore warning signs','to remain unprepared']},
-{h:'料事如神',p:'liào shì rú shén',m:'uncanny ability to forecast events',d:['frequently wrong in prediction','relying on luck','avoiding all forecasts']},
-{h:'洞若观火',p:'dòng ruò guān huǒ',m:'crystal clear understanding',d:['completely confused','partially understanding','observing without comprehension']},
-{h:'见微知著',p:'jiàn wēi zhī zhù',m:'to see the big picture from small signs',d:['to miss obvious clues','to focus on surface only','to ignore early warning']},
-{h:'明察秋毫',p:'míng chá qiū háo',m:'to observe with penetrating acuity',d:['to overlook obvious things','to rely on others\' observations','to make hasty judgments']},
-{h:'高瞻远瞩',p:'gāo zhān yuǎn zhǔ',m:'visionary',d:['short-sighted','reactive','present-focused']},
-{h:'审时度势',p:'shěn shí duó shì',m:'to read the situation accurately',d:['to act regardless of context','to ignore the environment','to rely on past experience only']},
-{h:'因势利导',p:'yīn shì lì dǎo',m:'to guide in accordance with the situation',d:['to impose a fixed plan','to resist change','to ignore momentum']},
-{h:'顺水推舟',p:'shùn shuǐ tuī zhōu',m:'to act opportunistically',d:['to resist natural trends','to force an outcome','to ignore timing']},
-{h:'水到渠成',p:'shuǐ dào qú chéng',m:'success comes naturally when conditions are right',d:['forcing a result prematurely','failing despite good conditions','working against the tide']},
-{h:'瓜熟蒂落',p:'guā shú dì luò',m:'things happen naturally at the right time',d:['forcing ripeness prematurely','delaying beyond maturity','preventing natural processes']},
-{h:'自然而然',p:'zìrán ér rán',m:'naturally',d:['deliberately forced','artificially arranged','consciously planned']},
-{h:'顺其自然',p:'shùn qí zìrán',m:'to let nature take its course',d:['to force an outcome','to resist change','to intervene constantly']},
-{h:'淡泊名利',p:'dàn bó míng lì',m:'indifferent to fame and fortune',d:['driven by ambition','focused on wealth','eager for recognition']},
-{h:'甘之如饴',p:'gān zhī rú yí',m:'to endure hardship willingly',d:['to complain about difficulty','to avoid all hardship','to endure reluctantly']},
-{h:'怡然自得',p:'yí rán zì dé',m:'carefree and contented',d:['anxious and dissatisfied','driven and ambitious','restless and unsettled']},
-{h:'超然物外',p:'chāo rán wù wài',m:'detached from worldly concerns',d:['deeply involved in worldly affairs','driven by material desire','easily swayed by others']},
-{h:'宠辱不惊',p:'chǒng rǔ bù jīng',m:'unmoved by praise or humiliation',d:['easily flattered','quick to despair','volatile in mood']},
-{h:'悲天悯人',p:'bēi tiān mǐn rén',m:'compassionate concern for humanity',d:['indifferent to suffering','contemptuous of weakness','focused on personal gain']},
-{h:'博施济众',p:'bó shī jì zhòng',m:'to give generously for the benefit of all',d:['to withhold from others','to serve only allies','to accumulate for oneself']},
-{h:'扶危济困',p:'fú wēi jì kùn',m:'to help those in danger and hardship',d:['to ignore those in need','to exploit the vulnerable','to observe without action']},
-{h:'力挽狂澜',p:'lì wǎn kuánglán',m:'to save a desperate situation',d:['to make things worse','to give up','to observe passively']},
-{h:'中流砥柱',p:'zhōng liú dǐ zhù',m:'a pillar of strength in difficult times',d:['a source of weakness','a bystander','a beneficiary of others\' effort']},
-{h:'砥砺前行',p:'dǐ lì qián xíng',m:'to forge ahead with determination',d:['to hesitate and retreat','to give up after failure','to wait for better times']},
-{h:'奋发图强',p:'fèn fā tú qiáng',m:'to work hard to become strong',d:['to rest on past achievements','to give up in adversity','to wait for help']},
-{h:'自强不息',p:'zì qiáng bù xī',m:'to strive ceaselessly for self-improvement',d:['to be easily satisfied','to rely on others','to stop after early success']},
-{h:'韬光养晦',p:'tāo guāng yǎng huì',m:'to hide one\'s strength and bide one\'s time',d:['to show off one\'s talents','to seek immediate recognition','to act boldly and publicly']},
-{h:'厚积薄发',p:'hòu jī bó fā',m:'to accumulate knowledge and release it at the right moment',d:['to act immediately without preparation','to spread effort thinly','to display talent constantly']},
-{h:'任重道远',p:'rèn zhòng dào yuǎn',m:'a great responsibility and a long road ahead',d:['a light duty easily fulfilled','a short task nearly complete','a small challenge easily met']},
-{h:'知行合一',p:'zhī xíng hé yī',m:'unity of knowledge and action',d:['knowing without acting','acting without thinking','theory and practice in conflict']},
-{h:'止于至善',p:'zhǐ yú zhì shàn',m:'to strive for perfection',d:['to settle for mediocrity','to stop at good enough','to avoid all imperfection']},
-{h:'格物致知',p:'gé wù zhì zhī',m:'to investigate things and extend knowledge',d:['to accept things as they are','to rely on intuition','to avoid deep inquiry']},
-{h:'慎独',p:'shèn dú',m:'to be virtuous even when alone and unobserved',d:['to behave only when watched','to be strict only in public','to follow rules only when required']},
-{h:'正心诚意',p:'zhèng xīn chéng yì',m:'to rectify the mind and make the will sincere',d:['to act without reflection','to prioritise external appearance','to follow rules mechanically']},
-],
+/* Grammar: fill the gap. a = right answer, d = wrong options, e = English. */
+const GRAMMAR = {
+  1: [
+    { s: "我___中国人。", a: "是", d: ["有", "在", "去"], e: "I am Chinese." },
+    { s: "你叫___名字？", a: "什么", d: ["哪儿", "几", "谁"], e: "What's your name?" },
+    { s: "这是我___书。", a: "的", d: ["了", "吗", "呢"], e: "This is my book." },
+    { s: "我妈妈___家里。", a: "在", d: ["是", "有", "叫"], e: "My mum is at home." },
+    { s: "你好___？", a: "吗", d: ["的", "了", "什么"], e: "How are you?" }
+  ],
+  2: [
+    { s: "我___去过中国。", a: "没", d: ["不", "别", "很"], e: "I've never been to China." },
+    { s: "他___我高。", a: "比", d: ["跟", "对", "给"], e: "He is taller than me." },
+    { s: "因为下雨，___我没去。", a: "所以", d: ["但是", "虽然", "如果"], e: "Because it rained, I didn't go." },
+    { s: "我们一___去吧！", a: "起", d: ["样", "点", "共"], e: "Let's go together!" },
+    { s: "你吃饭___吗？", a: "了", d: ["的", "过来", "着呢"], e: "Have you eaten?" }
+  ],
+  3: [
+    { s: "虽然很累，___他还是去上班了。", a: "但是", d: ["所以", "因为", "而且"], e: "Although he was tired, he still went to work." },
+    { s: "我把作业___完了。", a: "做", d: ["被", "让", "给"], e: "I've finished my homework." },
+    { s: "他跑___很快。", a: "得", d: ["的", "地", "了"], e: "He runs fast." },
+    { s: "如果明天下雨，我们___不去公园了。", a: "就", d: ["才", "把", "被"], e: "If it rains tomorrow, we won't go to the park." },
+    { s: "我___吃过北京烤鸭。", a: "从来没", d: ["一直不", "马上没", "已经不"], e: "I've never eaten Peking duck." }
+  ],
+  4: [
+    { s: "这件事___你来决定吧。", a: "由", d: ["被", "把", "对"], e: "Let's leave this decision to you." },
+    { s: "他不但会说中文，___会说日语。", a: "而且", d: ["但是", "所以", "或者"], e: "He speaks not only Chinese but also Japanese." },
+    { s: "无论天气怎么样，他___会去跑步。", a: "都", d: ["才", "就", "再"], e: "Whatever the weather, he always goes running." },
+    { s: "他对中国文化很感___。", a: "兴趣", d: ["意思", "关系", "味道"], e: "He's very interested in Chinese culture." },
+    { s: "我们要按___计划完成工作。", a: "照", d: ["着", "到", "过"], e: "We need to finish the work according to plan." }
+  ],
+  5: [
+    { s: "他宁可自己吃亏，___不愿意麻烦别人。", a: "也", d: ["才", "就", "还"], e: "He'd rather lose out himself than trouble others." },
+    { s: "与其在家里等，___自己去找他。", a: "不如", d: ["不但", "即使", "只有"], e: "Rather than wait at home, you'd better go and find him." },
+    { s: "即使失败了，我们___不能放弃。", a: "也", d: ["才", "就", "再"], e: "Even if we fail, we can't give up." },
+    { s: "这次比赛，他___拿了第一名。", a: "居然", d: ["果然", "既然", "虽然"], e: "He actually won first place this time (surprisingly)." },
+    { s: "他说话很___，大家都喜欢听。", a: "幽默", d: ["沉默", "默契", "默默"], e: "He speaks with humour; everyone likes listening to him." }
+  ],
+  6: [
+    { s: "面对困难，我们应该迎难而___。", a: "上", d: ["下", "进", "去"], e: "We should face difficulties head-on." },
+    { s: "他做事一向小心谨慎，从不___。", a: "马虎", d: ["仔细", "认真", "耐心"], e: "He's always careful and never sloppy." },
+    { s: "这部电影的情节扣人___。", a: "心弦", d: ["心事", "心情", "心思"], e: "The plot of this film is gripping." },
+    { s: "听了他的解释，大家恍然大___。", a: "悟", d: ["误", "物", "务"], e: "After his explanation, everyone suddenly understood." },
+    { s: "这个问题非常复杂，不能一___而论。", a: "概", d: ["切", "样", "般"], e: "This problem is complex; it can't be generalised." }
+  ],
+  7: [
+    { s: "这篇文章观点鲜明，论证___。", a: "严密", d: ["紧密", "亲密", "秘密"], e: "The essay has a clear position and rigorous argument." },
+    { s: "他做事总是瞻前___后。", a: "顾", d: ["看", "望", "思"], e: "He's always overly cautious." },
+    { s: "双方经过反复___，终于达成了协议。", a: "磋商", d: ["蹉跎", "搓揉", "挫折"], e: "After repeated consultations, both sides reached an agreement." },
+    { s: "这项改革措施可谓恰逢其___。", a: "时", d: ["事", "实", "势"], e: "This reform came at just the right time." },
+    { s: "他的演讲引经据___，令人信服。", a: "典", d: ["点", "电", "店"], e: "His speech, full of classical references, was convincing." }
+  ]
 };
 
-const LEVEL_LABELS={1:'HSK 1',2:'HSK 2',3:'HSK 3',4:'HSK 4',5:'HSK 5',6:'HSK 6',7:'HSK 7–9'};
-const ALL_LEVELS=[1,2,3,4,5,6,7];
+/* What you can do at each level */
+const LEVELS = {
+  1: { name: "HSK 1", head: "You've started your Chinese journey! 加油！", can: ["Say hello, thank you and goodbye", "Introduce yourself in a few words", "Recognise the most common characters"] },
+  2: { name: "HSK 2", head: "You can have simple conversations!", can: ["Talk about yourself, your family and your day", "Order food and ask for directions", "Read short, simple messages"] },
+  3: { name: "HSK 3", head: "You can hold a real conversation! 太棒了", can: ["Chat about daily life, work and travel", "Read short texts on familiar topics", "Follow slow, clear conversations"] },
+  4: { name: "HSK 4", head: "You can talk about almost anything! 厉害", can: ["Discuss a wide range of topics with native speakers", "Read articles and graded readers", "Follow shows with Chinese subtitles"] },
+  5: { name: "HSK 5", head: "You're an advanced learner! 了不起", can: ["Read newspapers and longer texts", "Watch Chinese TV and films", "Give a short, structured talk"] },
+  6: { name: "HSK 6", head: "You've got near-fluent Chinese! 佩服", can: ["Understand almost everything you hear or read", "Express yourself fluently in writing and speech", "Pick up idioms and nuance"] },
+  7: { name: "HSK 7–9", head: "Elite level. Very few learners get here! 牛", can: ["Read academic and literary Chinese", "Handle professional and formal situations", "Use 成语 and classical references naturally"] }
+};
+const TYPES = {
+  v: { label: "字 VOCABULARY", skill: "Vocabulary" },
+  l: { label: "听 LISTENING", skill: "Listening" },
+  r: { label: "读 READING", skill: "Reading" },
+  g: { label: "句 GRAMMAR", skill: "Grammar" }
+};
+const PRAISE = [["太棒了！", "Awesome!"], ["对了！", "Correct!"], ["很好！", "Very good!"], ["厉害！", "Impressive!"], ["没错！", "Exactly!"]];
+const COMFORT = [["没关系！", "No worries!"], ["加油！", "Keep going!"], ["差一点！", "So close!"]];
+/* ═══════════════════════════════════════════════════════ */
 
-const RESULT_INFO={
-  1:{badge:'HSK 1',heading:'Beginner — Keep going!',desc:'You\'re at the very start of your Mandarin journey. Focus on HSK 1 core vocabulary: numbers, greetings, and everyday nouns. Daily 10-minute practice adds up fast.',cta:'Work through the 150 most common HSK 1 words. Flashcards and repetition are your best friends at this stage.'},
-  2:{badge:'HSK 2',heading:'Elementary — Good start!',desc:'You\'ve got the basics down and can handle simple, familiar conversations. Push into HSK 2–3 vocabulary to unlock real communicative ability.',cta:'Practice HSK 2 sentence patterns and try short listening exercises. You\'re close to holding basic chats with confidence.'},
-  3:{badge:'HSK 3',heading:'Intermediate — Solid progress!',desc:'You\'re comfortable with everyday Chinese and can discuss familiar topics. HSK 3 is where the language starts to feel genuinely useful.',cta:'Dive into HSK 3–4 vocabulary and try watching simple Chinese content with subtitles to reinforce what you know.'},
-  4:{badge:'HSK 4',heading:'Upper-Intermediate — Impressive!',desc:'You can navigate a wide range of topics and understand native content with some effort. HSK 4 is roughly B2 — a real communicative milestone.',cta:'Challenge yourself with authentic Chinese media, podcasts, or graded readers. Push for natural fluency.'},
-  5:{badge:'HSK 5',heading:'Advanced — Outstanding!',desc:'Strong command of Chinese. You can read most texts, watch native TV, and engage in complex discussions. HSK 5 is roughly C1 on the CEFR scale.',cta:'Focus on nuanced vocabulary, four-character idioms (成语), and professional or literary Chinese. You\'re nearly there.'},
-  6:{badge:'HSK 6',heading:'Mastery — Exceptional!',desc:'Near-native vocabulary command. You can read professional texts, appreciate literary language, and communicate in any context with precision.',cta:'Explore classical Chinese (文言文), specialised domains, and translation work. You\'ve truly mastered Mandarin.'},
-  7:{badge:'HSK 7–9',heading:'Elite — Extraordinary!',desc:'You have reached the very pinnacle of Chinese language proficiency. Your command of literary idioms, classical allusions, and subtle nuance is at a native — or beyond-native — level.',cta:'Engage with classical literature, academic discourse, and advanced translation. Very few non-native speakers ever reach this level. Extraordinary.'},
+const $ = id => document.getElementById(id);
+const rnd = n => Math.floor(Math.random() * n);
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const levelName = l => LEVELS[l].name;
+
+/* ---------- speech (listening) ---------- */
+let zhVoice = null;
+function findVoice() {
+  if (!("speechSynthesis" in window)) return;
+  const vs = speechSynthesis.getVoices();
+  zhVoice = vs.find(v => /zh[-_]CN/i.test(v.lang)) || vs.find(v => /^zh/i.test(v.lang)) || vs.find(v => /cmn/i.test(v.lang)) || null;
+}
+if ("speechSynthesis" in window) { findVoice(); speechSynthesis.onvoiceschanged = findVoice; }
+const canListen = () => !!zhVoice;
+function speak(text, btn) {
+  if (!canListen()) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.voice = zhVoice; u.lang = zhVoice.lang; u.rate = 0.8;
+  if (btn) { btn.classList.add("speaking"); u.onend = u.onerror = () => btn.classList.remove("speaking"); }
+  speechSynthesis.speak(u);
+}
+
+/* ---------- state ---------- */
+let S;
+function reset() {
+  S = { lvl: START_LEVEL, up: 0, n: 0, streak: 0, best: 0, log: [], used: {}, gUsed: {}, cur: null, answered: false };
+}
+
+function pickWord(l, avoid) {
+  const pool = BANK[l]; S.used[l] = S.used[l] || new Set();
+  let idx = shuffle(pool.map((_, i) => i)).filter(i => !S.used[l].has(i) && !(avoid && avoid.has(pool[i].h)));
+  if (!idx.length) { S.used[l] = new Set(); idx = pool.map((_, i) => i); }
+  const i = idx[0]; S.used[l].add(i); return pool[i];
+}
+// three other words of the same level, preferably the same length, all different from the answer
+function wordDistractors(l, w) {
+  const same = BANK[l].filter(x => x.h !== w.h && x.m !== w.m);
+  const byLen = shuffle(same.filter(x => x.h.length === w.h.length));
+  const rest = shuffle(same.filter(x => x.h.length !== w.h.length));
+  const out = [], seen = new Set([w.h]);
+  for (const x of byLen.concat(rest)) { if (!seen.has(x.h)) { out.push(x); seen.add(x.h); } if (out.length === 3) break; }
+  return out;
+}
+
+function nextType() {
+  // a fixed rhythm with a little randomness: vocab, listening, reading, grammar
+  const pattern = ["v", "l", "r", "v", "g"];
+  let t = pattern[S.n % pattern.length];
+  if (S.n > 4 && Math.random() < .25) t = ["v", "l", "r", "g"][rnd(4)];
+  if (t === "l" && !canListen()) t = "r";
+  if (t === "g") { S.gUsed[S.lvl] = S.gUsed[S.lvl] || 0; if (S.gUsed[S.lvl] >= GRAMMAR[S.lvl].length) t = "v"; }
+  return t;
+}
+
+function buildQuestion() {
+  const l = S.lvl, t = nextType();
+  if (t === "g") {
+    const pool = GRAMMAR[l], g = pool[S.gUsed[l]++ % pool.length];
+    return { t, l, prompt: g, answer: g.a, options: shuffle([g.a, ...g.d]), zhOpts: true, show: g.s.replace("___", g.a), meaning: g.e };
+  }
+  const w = pickWord(l);
+  if (t === "v") return { t, l, w, answer: w.m, options: shuffle([w.m, ...w.d]), zhOpts: false, show: w.h, meaning: w.m };
+  const ds = wordDistractors(l, w);
+  return { t, l, w, answer: w.h, options: shuffle([w.h, ...ds.map(x => x.h)]), zhOpts: true, show: w.h, meaning: w.m };
+}
+
+/* ---------- screens ---------- */
+function show(id) { document.querySelectorAll(".screen").forEach(s => s.classList.toggle("on", s.id === id)); window.scrollTo(0, 0); }
+
+function renderLadder() {
+  $("ladder").innerHTML = [7, 6, 5, 4, 3, 2, 1].map(l =>
+    `<div class="rung ${l === S.lvl ? "here" : l < S.lvl ? "done" : ""}"><i></i>${levelName(l)}</div>`).join("");
+}
+
+function loadQuestion() {
+  S.answered = false;
+  const q = S.cur = buildQuestion();
+  $("count").textContent = `${S.n + 1} / ${TOTAL}`;
+  $("fill").style.width = (S.n / TOTAL * 100) + "%";
+  $("qType").textContent = TYPES[q.t].label;
+  $("qLvl").textContent = levelName(q.l) + (q.t === "g" ? " sentence" : " word");
+  renderLadder();
+  const pin = $("pinyinToggle").checked;
+  let h = "";
+  if (q.t === "v") {
+    h = `<div class="hanzi ${q.w.h.length > 3 ? "long" : ""}">${esc(q.w.h)}</div>` + (pin ? `<div class="pinyin">${esc(q.w.p)}</div>` : "") + `<div class="hint">What does this mean?</div>`;
+  } else if (q.t === "r") {
+    h = `<div class="meaning">“${esc(q.w.m)}”</div><div class="hint">Which one means this?</div>`;
+  } else if (q.t === "l") {
+    h = `<button class="play" type="button" id="playBtn" aria-label="Play the word"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button><div class="hint">Listen, then pick the word you heard. Tap to hear it again.</div>`;
+  } else {
+    h = `<div class="sentence">${esc(q.prompt.s).replace("___", '<span class="gap" id="gap">？</span>')}</div><div class="hint">Which word completes the sentence?</div>`;
+  }
+  $("prompt").innerHTML = h;
+  $("choices").innerHTML = q.options.map((o, i) =>
+    `<button class="choice" type="button" data-o="${esc(o)}"><span class="k">${"ABCD"[i]}</span><span class="${q.zhOpts ? "zh" : ""}">${esc(o)}</span></button>`).join("");
+  $("feedback").className = "feedback";
+  $("skipBtn").style.visibility = "visible";
+  if (q.t === "l") {
+    const pb = $("playBtn"); pb.onclick = () => speak(q.w.h, pb);
+    setTimeout(() => speak(q.w.h, pb), 350);
+  }
+}
+
+function answer(choice, skipped) {
+  if (S.answered) return;
+  S.answered = true;
+  const q = S.cur, ok = !skipped && choice === q.answer;
+  S.log.push({ t: q.t, l: q.l, ok, skipped: !!skipped, q: q.t === "g" ? q.prompt.s : (q.t === "r" ? q.w.m : q.w.h), right: q.answer, chosen: choice, meaning: q.meaning, show: q.show });
+  document.querySelectorAll(".choice").forEach(b => {
+    b.disabled = true;
+    if (b.dataset.o === q.answer) b.classList.add("ok");
+    else if (b.dataset.o === choice) b.classList.add("bad");
+  });
+  if (q.t === "g" && $("gap")) $("gap").textContent = q.answer;
+  // adapt: two right in a row → harder; a miss → easier
+  if (ok) {
+    S.streak++; S.best = Math.max(S.best, S.streak); S.up++;
+    if (S.up >= 2 && S.lvl < 7) { S.lvl++; S.up = 0; }
+  } else { S.streak = 0; S.up = 0; if (S.lvl > 1) S.lvl--; }
+  const st = $("streak"); st.textContent = S.streak >= 2 ? "🔥 " + S.streak : ""; st.classList.remove("pop"); void st.offsetWidth; if (S.streak >= 2) st.classList.add("pop");
+  const fb = $("feedback"), [zh, en] = (ok ? PRAISE : COMFORT)[rnd((ok ? PRAISE : COMFORT).length)];
+  fb.className = "feedback on " + (ok ? "good" : "miss");
+  $("fbTitle").innerHTML = `<span class="zh">${zh}</span> ${en}`;
+  const detail = q.t === "g"
+    ? `<span class="zh">${esc(q.show)}</span> · ${esc(q.meaning)}`
+    : `<span class="zh">${esc(q.w.h)}</span> ${esc(q.w.p)} · ${esc(q.w.m)}`;
+  $("fbText").innerHTML = (ok ? "" : "The answer: ") + detail;
+  S.n++;
+  $("nextBtn").textContent = S.n >= TOTAL ? "See my level →" : "Next →";
+  $("skipBtn").style.visibility = "hidden";
+  $("fill").style.width = (S.n / TOTAL * 100) + "%";
+  $("nextBtn").focus({ preventScroll: true });
+}
+
+/* ---------- scoring ---------- */
+function estimate() {
+  const by = {}; for (let l = 1; l <= 7; l++) by[l] = { c: 0, t: 0 };
+  S.log.forEach(x => { by[x.l].t++; if (x.ok) by[x.l].c++; });
+  let lv = 1;
+  for (let l = 1; l <= 7; l++) if (by[l].t >= 2 && by[l].c / by[l].t >= 0.6) lv = l;
+  // a single strong answer at a level above counts if the level below is solid
+  for (let l = 2; l <= 7; l++) if (by[l].t === 1 && by[l].c === 1 && lv === l - 1) lv = l;
+  const nxt = by[lv + 1];
+  const close = lv < 7 && nxt && nxt.t >= 1 && nxt.c / nxt.t >= 0.4;
+  // progress within the level for the badge ring
+  const p = lv === 7 ? 100 : Math.round(40 + (close ? 45 : 20) + Math.min(15, (by[lv].c / Math.max(1, by[lv].t)) * 15));
+  return { lv, close, p };
+}
+function skills() {
+  const out = {};
+  Object.keys(TYPES).forEach(k => {
+    const xs = S.log.filter(x => x.t === k);
+    if (!xs.length) return;
+    // weight harder levels more, so a right answer at HSK 5 counts more than at HSK 1
+    const got = xs.reduce((a, x) => a + (x.ok ? x.l : 0), 0), max = xs.reduce((a, x) => a + x.l, 0);
+    const acc = xs.filter(x => x.ok).length / xs.length;
+    out[TYPES[k].skill] = Math.round(100 * (0.5 * acc + 0.5 * got / max));
+  });
+  return out;
+}
+
+/* ---------- result ---------- */
+let R;
+function showResult() {
+  const est = estimate(), sk = skills(), info = LEVELS[est.lv];
+  R = { ...est, sk, score: S.log.filter(x => x.ok).length };
+  show("sResult");
+  $("badge").style.setProperty("--p", est.p + "%");
+  $("rLevel").textContent = info.name; $("rLevel").className = info.name.length > 5 ? "long" : "";
+  $("rClose").textContent = est.close ? "close to " + levelName(est.lv + 1) : (est.lv === 7 ? "top level" : "");
+  $("rHead").innerHTML = esc(info.head).replace(/([一-鿿！]+)/g, '<span class="zh">$1</span>');
+  $("rCando").innerHTML = info.can.map(c => `<li>${esc(c)}</li>`).join("");
+  const colors = { Vocabulary: "#f37a48", Listening: "#4f7a94", Reading: "#1b6f1b", Grammar: "#7d5a8c" };
+  const names = Object.keys(sk);
+  $("rSkills").innerHTML = names.map(n => `<div class="skill"><span>${n}</span><div class="tr"><i style="background:${colors[n]}" data-w="${sk[n]}"></i></div><b>${sk[n]}%</b></div>`).join("");
+  setTimeout(() => document.querySelectorAll("#rSkills i").forEach(i => i.style.width = i.dataset.w + "%"), 50);
+  if (names.length > 1) {
+    const sorted = names.slice().sort((a, b) => sk[b] - sk[a]);
+    $("rSkillNote").textContent = `Strongest: ${sorted[0].toLowerCase()} · Work on: ${sorted[sorted.length - 1].toLowerCase()}`;
+  }
+  // offers
+  const tagUrl = `${LINKS.shop}?tags=${SHOP_TAG[est.lv]}`;
+  const club = `<div class="offer club"><div class="t">YOU'RE READY TO SPEAK</div><h3>Practise in the Mandarin Zest Club</h3><p>Live speaking sessions every week with learners at your level and native teachers. Try one for US$2.50.</p><a class="btn green" href="${LINKS.club}" target="_blank" rel="noopener">See the Club ↗</a></div>`;
+  const start = `<div class="offer start"><div class="t">START HERE</div><h3>Free beginner roadmap &amp; workbook</h3><p>A clear 90-day plan for your first steps, plus a workbook to practise your first characters.</p><a class="btn dark" href="${LINKS.startHere}" target="_blank" rel="noopener">Get them free ↗</a></div>`;
+  const shopName = est.lv === 7 ? "Advanced materials" : `${info.name} textbooks &amp; readers`;
+  const shop = `<div class="offer shop"><div class="t">MADE FOR YOUR LEVEL</div><h3>${shopName}</h3><p>Everything in our shop for ${est.lv === 7 ? "advanced learners" : info.name}. 10% off your first order with <span class="code">WELCOME01</span>.</p><a class="btn orange" href="${est.lv === 1 ? LINKS.hsk1Bundle : tagUrl}" target="_blank" rel="noopener">${est.lv === 1 ? "See the HSK 1 bundle" : "Shop " + (est.lv === 7 ? "advanced" : info.name)} ↗</a></div>`;
+  $("rOffers").innerHTML = est.lv >= 2 ? club + shop : start + shop;
+  $("mailTitle").textContent = `Get study tips for ${info.name} by email`;
+  $("mailMsg").textContent = ""; $("mail").reset();
+  $("review").classList.remove("on"); $("reviewBtn").textContent = "See my answers";
+  drawCard();
+}
+
+/* ---------- share card (1080 × 1350) ---------- */
+const mascotImg = new Image(); mascotImg.src = "mascot-reading.png";
+function rr(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+async function drawCard() {
+  try { await Promise.all([document.fonts.load("800 100px Outfit"), document.fonts.load("600 30px Outfit"), document.fonts.load("700 40px 'Noto Sans SC'")]); } catch (e) {}
+  if (!mascotImg.complete) await new Promise(r => { mascotImg.onload = mascotImg.onerror = r; });
+  const c = $("card"), x = c.getContext("2d"), info = LEVELS[R.lv];
+  x.clearRect(0, 0, 1080, 1350);
+  x.fillStyle = "#fdf1ea"; x.fillRect(0, 0, 1080, 1350);
+  x.fillStyle = "#f8dacd"; x.beginPath(); x.arc(980, 120, 300, 0, Math.PI * 2); x.fill();
+  x.fillStyle = "#e0f4e0"; x.beginPath(); x.arc(60, 1330, 220, 0, Math.PI * 2); x.fill();
+  x.fillStyle = "#a8431a"; x.font = "800 34px Outfit"; x.fillText("MY CHINESE LEVEL", 80, 150);
+  x.fillStyle = "#2a2420"; x.font = "700 28px Outfit"; x.textAlign = "right"; x.fillText("Mandarin Zest", 1000, 90); x.textAlign = "left";
+  x.fillStyle = "#2a2420"; x.font = `800 ${info.name.length > 5 ? 190 : 240}px Outfit`; x.fillText(info.name, 70, 380);
+  if (R.close) { x.fillStyle = "#c4521f"; x.font = "700 40px Outfit"; x.fillText("and close to " + levelName(R.lv + 1), 82, 450); }
+  // skills
+  const colors = { Vocabulary: "#f37a48", Listening: "#4f7a94", Reading: "#1b6f1b", Grammar: "#7d5a8c" };
+  let y = 545;
+  Object.keys(R.sk).forEach(n => {
+    x.fillStyle = "#2a2420"; x.font = "700 34px Outfit"; x.fillText(n, 80, y);
+    x.fillStyle = "#f1e3da"; rr(x, 330, y - 26, 300, 26, 13); x.fill();
+    x.fillStyle = colors[n]; rr(x, 330, y - 26, Math.max(26, 3 * R.sk[n]), 26, 13); x.fill();
+    x.fillStyle = "#2a2420"; x.font = "800 32px Outfit"; x.fillText(R.sk[n] + "%", 650, y);
+    y += 62;
+  });
+  // what I can do
+  x.fillStyle = "#2a2420"; x.font = "800 28px Outfit"; x.fillText("I CAN…", 80, y + 30);
+  let cy = y + 84;
+  info.can.slice(0, 2).forEach(line => {
+    x.fillStyle = "#1b6f1b"; x.font = "800 32px Outfit"; x.fillText("✓", 80, cy);
+    x.fillStyle = "#2a2420"; x.font = "600 32px Outfit";
+    const words = line.split(" "); let cur = "";
+    words.forEach(wd => { const t = cur ? cur + " " + wd : wd; if (x.measureText(t).width > 540 && cur) { x.fillText(cur, 126, cy); cy += 42; cur = wd; } else cur = t; });
+    x.fillText(cur, 126, cy); cy += 58;
+  });
+  // mascot + bubble
+  if (mascotImg.naturalWidth) { const h = 520, w = h * mascotImg.naturalWidth / mascotImg.naturalHeight; x.drawImage(mascotImg, 1080 - w - 60, 1350 - h - 210, w, h); }
+  const word = { 1: "加油！", 2: "很好！", 3: "太棒了！", 4: "厉害！", 5: "了不起！", 6: "佩服！", 7: "牛！" }[R.lv];
+  x.font = "700 56px 'Noto Sans SC'"; const bw = x.measureText(word).width + 60;
+  x.fillStyle = "#fff"; rr(x, 1080 - bw - 70, 540, bw, 96, 32); x.fill();
+  x.fillStyle = "#2a2420"; x.fillText(word, 1080 - bw - 40, 608);
+  // footer
+  x.fillStyle = "#2a2420"; rr(x, 60, 1150, 960, 140, 36); x.fill();
+  x.fillStyle = "#fff"; x.font = "800 40px Outfit"; x.fillText("What's your level? Take the free test", 100, 1210);
+  x.fillStyle = "#f8a77f"; x.font = "600 34px Outfit"; x.fillText(LINKS.test, 100, 1260);
+}
+function cardBlob() { return new Promise(r => $("card").toBlob(r, "image/png")); }
+$("saveBtn").onclick = async () => {
+  const b = await cardBlob(); const a = document.createElement("a");
+  a.href = URL.createObjectURL(b); a.download = `my-chinese-level-${LEVELS[R.lv].name.replace(/\W+/g, "")}.png`;
+  document.body.appendChild(a); a.click(); a.remove();
+  $("copied").textContent = "Saved! Post it on your story ✨";
+};
+$("shareBtn").onclick = async () => {
+  const text = `My Chinese level is ${LEVELS[R.lv].name}! What's yours? Take the free test: https://www.${LINKS.test}`;
+  try {
+    const b = await cardBlob(); const file = new File([b], "my-chinese-level.png", { type: "image/png" });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], text }); return; }
+    if (navigator.share) { await navigator.share({ text }); return; }
+  } catch (e) { if (e && e.name === "AbortError") return; }
+  try { await navigator.clipboard.writeText(text); $("copied").textContent = "Text copied! Save the image to post it too."; }
+  catch (e) { $("copied").textContent = "Save the image and share it with: " + LINKS.test; }
 };
 
-const MAX_Q=20;
-let lvl,streak,qCount,score,answered,levelScores,used,curWord;
+/* ---------- email ---------- */
+$("mail").addEventListener("submit", e => {
+  e.preventDefault();
+  const email = $("mailEmail").value.trim(), m = $("mailMsg");
+  m.className = "msg";
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { m.className = "msg err"; m.textContent = "Please check your email address."; return; }
+  if (!$("mailOk").checked) { m.className = "msg err"; m.textContent = "Please tick the box so we can email you."; return; }
+  try {
+    fetch(SHEET_URL, { method: "POST", mode: "no-cors", keepalive: true, headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ email, source: `hsk-test | ${LEVELS[R.lv].name} | ${R.score}/${TOTAL}`, timestamp: new Date().toISOString() }) }).catch(() => {});
+  } catch (err) {}
+  m.textContent = "You're in! Tips for your level are on their way.";
+  $("mail").querySelector("button").disabled = true;
+});
 
-function shuffle(a){return [...a].sort(()=>Math.random()-0.5)}
+/* ---------- review ---------- */
+$("reviewBtn").onclick = () => {
+  const r = $("review"), on = !r.classList.contains("on");
+  r.classList.toggle("on", on); $("reviewBtn").textContent = on ? "Hide my answers" : "See my answers";
+  if (!on) return;
+  r.innerHTML = S.log.map(x => {
+    const mark = x.skipped ? '<span class="m s">–</span>' : x.ok ? '<span class="m y">✓</span>' : '<span class="m n">✗</span>';
+    const q = x.t === "g" ? `<span class="zh">${esc(x.show)}</span> <span style="color:#6b5a50">· ${esc(x.meaning)}</span>`
+      : `<span class="zh">${esc(x.show)}</span> · ${esc(x.meaning)}` + (!x.ok && !x.skipped ? ` <span style="color:#b3261e">(you chose: ${x.t === "v" ? esc(x.chosen) : '<span class="zh">' + esc(x.chosen) + "</span>"})</span>` : "");
+    return `<div class="rv">${mark}<div class="q">${q}</div><span class="l">${TYPES[x.t].skill} · ${levelName(x.l)}</span></div>`;
+  }).join("");
+};
 
-function pickWord(l){
-  if(!used[l])used[l]=new Set();
-  const pool=BANK[l],avail=pool.map((_,i)=>i).filter(i=>!used[l].has(i));
-  if(!avail.length){used[l]=new Set();return pickWord(l);}
-  const idx=avail[Math.floor(Math.random()*avail.length)];
-  used[l].add(idx);
-  return pool[idx];
-}
-
-function startTest(){
-  lvl=1;streak=0;qCount=0;score=0;answered=false;
-  levelScores={};used={};
-  ALL_LEVELS.forEach(l=>levelScores[l]={correct:0,total:0});
-  document.getElementById('startScreen').style.display='none';
-  document.getElementById('quizScreen').style.display='block';
-  loadQ();
-}
-
-function loadQ(){
-  answered=false;
-  curWord=pickWord(lvl);
-  document.getElementById('progressLabel').textContent=`Question ${qCount+1} of ${MAX_Q}`;
-  document.getElementById('progressScore').textContent=`${score} correct`;
-  document.getElementById('progressFill').style.width=`${(qCount/MAX_Q)*100}%`;
-  const card=document.getElementById('flashcard');
-  card.classList.remove('anim');void card.offsetWidth;card.classList.add('anim');
-  document.getElementById('charDisplay').textContent=curWord.h;
-  document.getElementById('pinyinDisplay').textContent=curWord.p;
-  const opts=shuffle([curWord.m,...curWord.d]);
-  const el=document.getElementById('choices');el.innerHTML='';
-  opts.forEach(o=>{
-    const b=document.createElement('button');
-    b.className='choice-btn';b.textContent=o;
-    b.onclick=()=>handleAnswer(o,curWord.m,b);
-    el.appendChild(b);
-  });
-  document.getElementById('feedback').className='feedback';
-  document.getElementById('nextBtn').className='next-btn';
-}
-
-function handleAnswer(chosen,correct,btn){
-  if(answered)return;
-  answered=true;
-  const ok=chosen===correct;
-  levelScores[lvl].total++;
-  if(ok){score++;levelScores[lvl].correct++;}
-  document.querySelectorAll('.choice-btn').forEach(b=>{
-    b.disabled=true;
-    if(b.textContent===correct)b.classList.add('correct');
-    else if(b===btn&&!ok)b.classList.add('wrong');
-  });
-  const fb=document.getElementById('feedback');
-  if(ok){
-    fb.className='feedback ok show';
-    document.getElementById('fbIcon').textContent='✓';
-    document.getElementById('fbText').textContent='Correct!';
-    streak++;
-    if(streak>=2&&lvl<7){lvl++;streak=0;}
-  }else{
-    fb.className='feedback err show';
-    document.getElementById('fbIcon').textContent='✗';
-    document.getElementById('fbText').textContent=`The answer is "${correct}"`;
-    streak=0;
-    if(lvl>1)lvl--;
-  }
-  qCount++;
-  const nb=document.getElementById('nextBtn');
-  nb.textContent=qCount>=MAX_Q?'See results →':'Next →';
-  nb.className='next-btn show';
-}
-
-function nextQuestion(){
-  if(qCount>=MAX_Q)showResult();else loadQ();
-}
-
-function estimateLevel(){
-  let best=1;
-  for(let l=1;l<=7;l++){
-    const s=levelScores[l];
-    if(s.total>=1&&s.correct/s.total>=0.6)best=l;
-  }
-  return best;
-}
-
-function showResult(){
-  document.getElementById('quizScreen').style.display='none';
-  const rs=document.getElementById('resultScreen');
-  rs.style.display='block';rs.classList.add('anim');
-  const pct=Math.round((score/qCount)*100);
-  const lv=estimateLevel();
-  const info=RESULT_INFO[lv];
-  // purple badge for elite
-  const inner=document.querySelector('.result-badge-inner');
-  inner.style.background=lv===7?'#4a148c':lv>=5?'#6a1b9a':'var(--orange)';
-  document.getElementById('rBadgeLevel').textContent=info.badge;
-  document.getElementById('rHeading').textContent=info.heading;
-  document.getElementById('rDesc').textContent=info.desc;
-  document.getElementById('rCorrect').textContent=score;
-  document.getElementById('rTotal').textContent=qCount;
-  document.getElementById('rPct').textContent=pct+'%';
-  document.getElementById('ctaBody').textContent=info.cta;
-  const br=document.getElementById('breakdownRows');br.innerHTML='';
-  ALL_LEVELS.forEach(l=>{
-    const s=levelScores[l];
-    const p=s.total?Math.round((s.correct/s.total)*100):null;
-    const cls=p!==null&&p>=60?(l>=7?'purple':'green'):'';
-    br.innerHTML+=`<div class="breakdown-row">
-      <div class="breakdown-lbl">${LEVEL_LABELS[l]}</div>
-      <div class="breakdown-bar-track"><div class="breakdown-bar-fill${cls?' '+cls:''}" style="width:${p??0}%"></div></div>
-      <div class="breakdown-pct">${p!==null?p+'%':'—'}</div>
-    </div>`;
-  });
-}
-
-function restartTest(){
-  document.getElementById('resultScreen').style.display='none';
-  document.getElementById('startScreen').style.display='block';
-  document.querySelector('.result-badge-inner').style.background='var(--orange)';
-}
-
-function shareResult(){
-  const lv=estimateLevel();
-  const pct=Math.round((score/qCount)*100);
-  const text=`I scored ${score}/${qCount} (${pct}%) on the Mandarin Zest HSK test — estimated ${RESULT_INFO[lv].badge}! 🇨🇳 Try it at MandarinZest.com`;
-  if(navigator.clipboard){
-    navigator.clipboard.writeText(text).then(()=>{
-      const btn=document.querySelector('.share-btn');
-      btn.textContent='Copied! ✓';
-      setTimeout(()=>btn.textContent='Share result',2000);
-    });
-  }
-}
+/* ---------- wiring ---------- */
+$("startBtn").onclick = () => {
+  reset(); show("sQuiz"); loadQuestion();
+  if ("speechSynthesis" in window) { try { speechSynthesis.speak(new SpeechSynthesisUtterance("")); } catch (e) {} } // unlock audio on iPhone
+};
+$("choices").addEventListener("click", e => { const b = e.target.closest(".choice"); if (b && !b.disabled) answer(b.dataset.o); });
+$("skipBtn").onclick = () => answer(null, true);
+$("nextBtn").onclick = () => { if (S.n >= TOTAL) showResult(); else loadQuestion(); };
+$("againBtn").onclick = () => { show("sStart"); };
+document.addEventListener("keydown", e => {
+  if (!$("sQuiz").classList.contains("on")) return;
+  if (!S.answered && /^[1-4a-dA-D]$/.test(e.key)) { const i = "1234".indexOf(e.key) > -1 ? "1234".indexOf(e.key) : "abcd".indexOf(e.key.toLowerCase()); const b = document.querySelectorAll(".choice")[i]; if (b) b.click(); }
+  else if (S.answered && e.key === "Enter") { e.preventDefault(); $("nextBtn").click(); }
+});
 </script>
 </body>
 </html>
