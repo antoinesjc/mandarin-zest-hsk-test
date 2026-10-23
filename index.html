@@ -540,9 +540,12 @@ function skills() {
 
 /* ---------- result ---------- */
 let R;
+// Google Analytics: tell the Odoo page what happened (no personal data). The page's <head> listener sends it to GA.
+function mzGA(name, params) { try { window.top.postMessage({ mz: "track", ga: { event: name, params: params || {} } }, "*"); } catch (e) {} }
 function showResult() {
   const est = estimate(), sk = skills(), info = LEVELS[est.lv];
   R = { ...est, sk, score: S.log.filter(x => x.ok).length };
+  mzGA("hsk_test_complete", { hsk_level: info.name, score: R.score });
   show("sResult");
   $("badge").style.setProperty("--p", est.p + "%");
   $("rLevel").textContent = info.name; $("rLevel").className = info.name.length > 5 ? "long" : "";
@@ -641,6 +644,7 @@ $("mail").addEventListener("submit", e => {
     fetch(SHEET_URL, { method: "POST", mode: "no-cors", keepalive: true, headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify({ email, source: `hsk-test | ${LEVELS[R.lv].name} | ${R.score}/${TOTAL}`, timestamp: new Date().toISOString() }) }).catch(() => {});
   } catch (err) {}
+  mzGA("generate_lead", { lead_source: "hsk-test", hsk_level: LEVELS[R.lv].name });
   m.textContent = "You're in! Tips for your level are on their way.";
   $("mail").querySelector("button").disabled = true;
 });
